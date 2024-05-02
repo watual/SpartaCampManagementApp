@@ -20,5 +20,11 @@ public class StudentManagement_LJS  {
             System.out.println(a.get(i));
         }
     }
+}
+
+public class StudentManagement_LJS {
+    public static void run(){
+
+    }
 
 }
