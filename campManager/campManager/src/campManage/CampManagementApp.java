@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class CampManagementApp {
     public static void main(String[] args) throws Exception {
-        Scanner sc = new Scanner(new File("D:\\spajava\\SpartaCampManagementApp\\campManager\\campManager\\src\\campManage\\src\\Database.txt"));
+        Scanner sc = new Scanner(new File(""));
         ArrayList<String> a = new ArrayList<>();
         while (sc.hasNextLine()) {
             String line = sc.nextLine();
