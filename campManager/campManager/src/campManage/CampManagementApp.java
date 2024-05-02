@@ -1,4 +1,6 @@
-package campManage;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 import campManage.scoreManagement.ScoreManagement;
 import campManage.scoreManagement.ScoreManagement_BWH;
