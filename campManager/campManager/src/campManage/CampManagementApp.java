@@ -1,3 +1,5 @@
+package campManage;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -37,5 +39,3 @@ public class CampManagementApp {
         }
     }
 }
-출처:https://hianna.tistory.com/587 [어제 오늘 내일:티스토리]
-        
