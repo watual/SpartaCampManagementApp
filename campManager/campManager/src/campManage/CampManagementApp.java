@@ -1,13 +1,41 @@
-package campManage;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+import campManage.scoreManagement.ScoreManagement;
+import campManage.scoreManagement.ScoreManagement_BWH;
+import campManage.scoreManagement.ScoreManagement_CYJ;
+import campManage.scoreManagement.ScoreManagement_KMG;
+import campManage.studentManagement.StudentManagement_BWH;
+import campManage.studentManagement.StudentManagement_KDH;
+import campManage.studentManagement.StudentManagement_LJS;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.sql.SQLOutput;
+import java.util.Scanner;
 
 public class CampManagementApp {
-    public static void main(String[] args) throws  CampManagementApp  {
-        Scanner scanner = new Scanner(new File("C:\\Users\\민규\\IdeaProjects\\SpartaCampManagementApp\\campManager\\campManager\\src\\campManage\\src\\Database.txt");
-        while (scanner.hasNext()) {
-            String str = scanner.next();
-            System.out.println(str);
+    public static void main(String[] args) throws FileNotFoundException {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("========================================");
+        System.out.println("= = = 실행할 프로젝트를 선택해주세요 = = =");
+        System.out.println("1. 학생관리 _ 김도훈");
+        System.out.println("2. 학생관리 _ 이재성");
+        System.out.println("3. 학생관리 _ 백원하");
+        System.out.println("4. 점수관리 _ 최유진");
+        System.out.println("5. 점수관리 _ 김민규");
+        System.out.println("6. 점수관리 _ 백원하");
+        switch (sc.nextLine().charAt(0)){
+            case '1' -> StudentManagement_KDH.run();
+            case '2' -> StudentManagement_LJS.run();
+            case '3' -> StudentManagement_BWH.run();
+            case '4' -> ScoreManagement_CYJ.run();
+            case '5' -> ScoreManagement_KMG.run();
+            case '6' -> ScoreManagement_BWH.run();
+            default -> System.out.println("재실행");
         }
     }
 }
 출처:https://hianna.tistory.com/587 [어제 오늘 내일:티스토리]
-        }
+        
