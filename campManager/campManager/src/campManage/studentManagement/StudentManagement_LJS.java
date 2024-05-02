@@ -1,7 +1,12 @@
 package campManage.studentManagement;
 
-public class StudentManagement_LJS {
-    public static void run(){
+import campManage.model.Student;
 
+public class StudentManagement_LJS {
+
+    public static void run() {
+     
     }
+
+
 }
