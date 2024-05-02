@@ -1,4 +1,4 @@
-package campManage.model;
+package model;
 
 public class Subject {
 }

@@ -1,4 +1,5 @@
-package campManage.model;
+package model;
 
 public class Student {
+    Subject sub = new Subject();
 }
