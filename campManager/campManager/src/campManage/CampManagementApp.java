@@ -31,7 +31,7 @@ public class CampManagementApp {
         System.out.println("4. 점수관리 _ 최유진");
         System.out.println("5. 점수관리 _ 김민규");
         System.out.println("6. 점수관리 _ 백원하");
-        switch (sc.nextLine().charAt(0)){
+        switch (sc.nextLine().charAt(0)) {
             case '1' -> StudentManagement_KDH.run();
             case '2' -> StudentManagement_LJS.run();
             case '3' -> StudentManagement_BWH.run();
