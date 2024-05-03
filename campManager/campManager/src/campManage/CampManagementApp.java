@@ -40,5 +40,6 @@ public class CampManagementApp {
                 default -> System.out.println("재실행");
             }
         }
+        //여기로 break
     }
 }

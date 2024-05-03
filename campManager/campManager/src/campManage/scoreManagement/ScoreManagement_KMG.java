@@ -40,7 +40,6 @@ public class ScoreManagement_KMG {
     public static <ScoreManager> void run() {
         ScoreManager manager = (ScoreManager) new ScoreManagement_KMG();
 
-
         // 과목별 회차 점수 조회
         System.out.println("누구1의 1회차 점수: " + manager.getClass());
         System.out.println("누구2의 2회차 점수: " + manager.getClass());
