@@ -37,7 +37,7 @@ public class ScoreManagement_KMG {
         return -1;
     }
 
-    public static <ScoreManager> void main(String[] args) {
+    public static <ScoreManager> void run() {
         ScoreManager manager = (ScoreManager) new ScoreManagement_KMG();
 
 
