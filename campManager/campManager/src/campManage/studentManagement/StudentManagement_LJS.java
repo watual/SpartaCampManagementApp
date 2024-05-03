@@ -1,52 +1,37 @@
 package campManage.studentManagement;
 
-import java.io.File;
-import java.sql.SQLException;
+import campManage.model.Student1;
+
 import java.util.*;
 
 public class StudentManagement_LJS {
     // 필드
+
     static HashMap<String, ArrayList<String>> a = new HashMap<>();
 
-    // 메서드
-    // 데이터 읽기
-    public static void getDb() throws Exception {
-        Scanner sc = new Scanner(new File("campManager/campManager/src/campManage/src/Database.txt"));
-        for (;;) {
-            if (sc.hasNextLine()) {
-                ArrayList<String> list = new ArrayList<>();
-                list.add(Arrays.toString(sc.nextLine().split(";")));
-                a.put(sc.nextLine().split(",")[0], list);
+    //메서드
 
-            } else {
-                break;
-            }
-        }
-
-    }
-
-    // 파일 읽기
-    public void readFile() {
-        Scanner sc = new Scanner(System.in);
-    }
-
-    // 수강생 생성
-    public void makeStu() {
-        ArrayList<String> a = new ArrayList<>();
-        Scanner sc = new Scanner(System.in);
-        System.out.print("ID 입력 : ");
-        String id = sc.nextLine();
-        System.out.print("이름 입력 : ");
-        String name = sc.nextLine();
-        System.out.print("필수 과목 입력 : ");
-        String must = sc.nextLine();
-
-        System.out.println("선택 과목 입력 : ");
-
-    }
-    
-    // 값 출력
+    //값 출력
     public static void run() throws Exception {
+        Scanner s1 = new Scanner(System.in);
+        Student1 st = new Student1();
+        boolean flag = true;
+        while (flag) {
+            System.out.println("==========수강생 처리=========");
+            System.out.println("선택해주세요");
+            System.out.println("1. 생성");
+            System.out.println("2. 수정");
+            System.out.println("3. 삭제");
+            System.out.println("4. 조회");
+            System.out.println("5. 종료");
+            switch (s1.nextInt()) {
+                case 1 -> st.makeStu();
+                case 2 -> st.reStu();
+                case 3 -> st.delStu();
+                case 4 -> st.serStu();
+                case 5 -> flag = false;
+            }
 
+        }
     }
 }

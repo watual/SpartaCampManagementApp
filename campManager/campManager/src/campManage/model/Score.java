@@ -1,6 +1,6 @@
 package campManage.model;
 
-public class Score extends management {
+public class Score{
     String[] score = {"A","B","C","D","F","N"};
 
 
