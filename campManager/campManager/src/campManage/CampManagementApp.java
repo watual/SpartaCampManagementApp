@@ -1,6 +1,5 @@
 package campManage;
 
-
 import campManage.studentManagement.StudentManagement_LJS;
 
 import java.io.File;
