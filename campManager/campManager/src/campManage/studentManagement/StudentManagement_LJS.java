@@ -2,10 +2,7 @@ package campManage.studentManagement;
 
 import java.io.File;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 public class StudentManagement_LJS {
     //필드
@@ -15,15 +12,18 @@ public class StudentManagement_LJS {
     //데이터 읽기
     public static void getDb() throws Exception {
         Scanner sc = new Scanner(new File("campManager/campManager/src/campManage/src/Database.txt"));
-        while (sc.hasNextLine()) {
-            for (int i = 0; i < sc.nextLine().length(); i++) {
-                ArrayList<String> list = new ArrayList<>();
-                for (int j = 0; j < 4; j++) {
-                    list.add(i, sc.next().split(";")[j]);
-                }
-                    a.put(sc.next().split(";")[0], list);
-                }
+        for(;;){
+            if(sc.hasNextLine()){
+                    ArrayList<String> list = new ArrayList<>();
+                    list.add(Arrays.toString(sc.nextLine().split(";")));
+                    a.put(sc.nextLine().split(",")[0], list);
+
+            }else{
+                break;
             }
+        }
+
+
 
 
         }
