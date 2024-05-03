@@ -13,7 +13,7 @@ public class Student1 {
    private String ID;
    private String name;
    private String stuCon;
-   Subject subject;
+   Subject subject=new Subject();
     //생성자
     public Student1() throws Exception {
 
@@ -23,23 +23,55 @@ public class Student1 {
     //json
     JSONObject studentInfo = new JSONObject();
     Reader reader = new FileReader("campManager/campManager/src/campManage/src/testjson.json");
-
+    JSONParser parser = new JSONParser();
     // 전체 부분 조회 메서드
-    public void allStudent(){
-
+    public void allStudent() throws Exception {
+        Object obj = parser.parse(reader);
+        JSONObject jsonObject = (JSONObject)obj;
+        reader.close();
+        JSONObject jsonRes = new JSONObject();
+        JSONObject[] objs= new JSONObject[]{jsonObject};
+        for (JSONObject object : objs){
+            Iterator it = object.keySet().iterator();
+            while (it.hasNext()){
+                String key = (String) it.next();
+                jsonRes.put(key, object.get(key));
+            }
+        }
+        System.out.println(jsonRes);
     }
-    public void selectStudent() {
-
+    //아이디조회
+    public void selectStudent() throws Exception {
+        try{
+        System.out.print("id 입력 : ");
+        sc.nextLine();
+        String id = sc.nextLine();
+        Object obj = parser.parse(reader);
+        JSONObject jsonObject = (JSONObject)obj;
+        reader.close();
+        System.out.println(jsonObject.get(id));}
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
     }
-
+    //안내문
+    public void info(){
+        System.out.println("====필수과목====");
+        System.out.println("Java, 객체지향, Spring, JPA, MySQL");
+    }
+    public void info2(){
+        System.out.println("=====선택과목=====");
+        System.out.println("디자인 패턴, Spring Security, Redis, MongoDB");
+    }
     //생성
     public void makeStu() throws Exception {
-        JSONParser parser = new JSONParser();
+
         Object obj = parser.parse(reader);
         JSONObject jsonObject = (JSONObject)obj;
         reader.close();
         JSONObject addStudent = new JSONObject();
         JSONArray jsonArray = new JSONArray();
+        JSONArray jsonArray2 = new JSONArray();
         boolean flag = true;
         System.out.println("========수강생 생성=========");
         while (flag) {
@@ -49,24 +81,55 @@ public class Student1 {
             System.out.print("이름 입력 : ");
             String name = sc.nextLine();
             System.out.print("필수 과목 입력 : ");
+            info();
+            Loopout:
             while (true){
                 String must = sc.next();
+
                 if(jsonArray.size()<5){
+                    for(int i=0; i<subject.subject1.length; i++){
+                        if(must.equals("그만")){
+                            break Loopout;
+                        }else if(must.equals(subject.subject1[i])){
+                            jsonArray.add(must);
+                        }
+                    }
                     if(jsonArray.equals(must)){
                         System.out.println("잘못된 입력입니다!");
-                    }else{
-                    jsonArray.add(must);}
+                        break;
+                    }
                 }else{
                     break;
                 }
             }
+            info2();
             System.out.print("선택 과목 입력 : ");
+            Loopout2:
+            while (true){
+                String may = sc.next();
+
+                if(jsonArray2.size()<4){
+                    for(int i=0; i<subject.subject2.length; i++){
+                        if(may.equals("그만")){
+                            break Loopout2;
+                        }else if(may.equals(subject.subject2[i])){
+                            jsonArray2.add(may);
+                        }
+                    }
+                    if(jsonArray2.equals(may)){
+                        System.out.println("잘못된 입력입니다!");
+                        break;
+                    }
+                }else{
+                    break Loopout2;
+                }
+            }
             String select = sc.nextLine();
-            System.out.print("현재 상태 : ");
+            System.out.print("현재 상태(Green,Yellow,Red) : ");
             String con = sc.nextLine();
             stuObj.put("이름", name);
             stuObj.put("필수 과목", jsonArray);
-            stuObj.put("선택 과목", select);
+            stuObj.put("선택 과목", jsonArray2);
             stuObj.put("상태", con);
             addStudent.put(id,stuObj);
             JSONObject jsonRes = new JSONObject();
@@ -98,14 +161,7 @@ public class Student1 {
             }
         }
     }
-        //출력 테스트
-//    public void getlist()throws Exception{
-      //  JSONParser parser = new JSONParser();
 
-    // Object obj = parser.parse(reader);
-//        JSONObject jsonObject = (JSONObject) obj;
-//        System.out.println(jsonObject);
-//    }
     //삭제
     public void delStu(){
         //조회
@@ -118,8 +174,8 @@ public class Student1 {
         //수정
     }
     //조회
-    public void serStu(){
-        System.out.println("1. 전체 조회 2. 검색 조회");
+    public void serStu() throws Exception{
+        System.out.println("1. 전체 조회 2. id 조회");
         switch (sc.nextInt()){
             case 1 -> allStudent();
             case 2 -> selectStudent();
