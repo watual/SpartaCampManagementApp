@@ -1,6 +1,18 @@
 
-백원하:SUBJECT_TYPE_MANDATORY:java,객체지향,Spring,JPA:
-안녕
-나는
-문어
-꿈을 꾸는 문어~
+1:백원하:java,객체지향,Spring,JPA:Green
+java
+1회차  2회차
+70(D) 15(F)
+객체지향
+1회차  2회차
+35(F) 0(F)
+Spring
+1회차
+0(F)
+과목타입 (필수, 선택)
+선택과목 A90이상 B80~89 C70~79 D60~69 F60미만
+필수과목 A95이상 B90~94 C80~90 D70~79 F69미만
+기본값 0(F)2
+
+고유ID:백원하:SUBJECT_TYPE_MANDATORY:java,객체지향,Spring,JPA:SUBJECT_TYPE_CHOISE:국어,영어
+최유진:SUBJECT_TYPE_MANDATORY:Spring,JPA:SUBJECT_TYPE_CHOISE:선택과목1:상태:yellow
