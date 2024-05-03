@@ -1,5 +1,7 @@
 package campManage;
 
+import campManage.studentManagement.StudentManagement_LJS;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -17,8 +19,9 @@ import java.io.FileNotFoundException;
 import java.sql.SQLOutput;
 import java.util.Scanner;
 
+
 public class CampManagementApp {
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws Exception {
         Scanner sc = new Scanner(System.in);
         System.out.println("========================================");
         System.out.println("= = = 실행할 프로젝트를 선택해주세요 = = =");
@@ -37,5 +40,7 @@ public class CampManagementApp {
             case '6' -> ScoreManagement_BWH.run();
             default -> System.out.println("재실행");
         }
+
+
     }
 }
