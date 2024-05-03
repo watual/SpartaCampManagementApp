@@ -12,6 +12,8 @@ public class ScoreManagement_BWH {
         while(sc.hasNext()){
             String str = sc.nextLine();
             System.out.println(str);
+
+
         }
     }
 }
