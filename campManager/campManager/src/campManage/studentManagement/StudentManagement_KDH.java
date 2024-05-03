@@ -5,9 +5,23 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
+import static campManage.studentManagement.JsonTest2.jsontest2;
+// 총 필수과목이 10개고 선택과목 4개다
+//수강생 이름 학번(ID) 필수과목 선택과목 상태
+// {이름 학번 필수과목{수학,영어,국어} 선택과목{과학 한자} 상태}
+// 1. 필수과목 목록이 아닌데 적었을경우
+// 필수과목 키를 꺼내서 반복문 조건문 필수과목일떄 선택과목 4개를 조건문으로 걸어서 아닐경우 돌아가고
+// 선택과목 선택과목 일때만 아니면 돌아가고
+// 배열로 만든다음에 향상된 포문으로 배열만들어서 돌리고 이프구문에 선택과목 향상된포문으로 돌려서 거르고
+
+
+//
+
 public class StudentManagement_KDH {
-    public static void run() throws IOException {
-        test();
+    public static void run() throws IOException { // 임시 run2
+        jsontest2();
+        System.out.println("확인");
+//        test();
     }
 
     //점수
@@ -41,6 +55,7 @@ public class StudentManagement_KDH {
             while ((line = reader.readLine()) != null) { // 한줄씩 읽음
                 System.out.println(line);
             }
+
         } else if (typing.equals("개별조회")) {
             System.out.println("id를 입력해주세요");
             boolean idcheck = true;
