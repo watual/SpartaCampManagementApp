@@ -1,8 +1,8 @@
 package campManage.model;
 
 public class Student extends management{
-   private String ID;
-   private String name;
+    private String ID;
+    private String name;
 
     //생성자
     public Student(String ID, String name) {
@@ -10,4 +10,3 @@ public class Student extends management{
         this.name = name;
     }
 }
-
