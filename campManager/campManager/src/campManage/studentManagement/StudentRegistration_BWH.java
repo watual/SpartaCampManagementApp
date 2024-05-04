@@ -9,6 +9,7 @@ import org.json.simple.parser.ParseException;
 
 import java.io.*;
 import java.nio.Buffer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -36,17 +37,28 @@ public class StudentRegistration_BWH {
         3. FileReader
             - 한번에 하나의 문자를 읽기 때문에 작은 파일이나 데이터를 문자 단위로 처리해야 할 때 유용
          */
-        FileReader reader = new FileReader(path);
-        JSONParser parser = new JSONParser();
 
-//        JSONObject jsonObject = (JSONObject) parser.parse();
+        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path), StandardCharsets.UTF_8));
+        StringBuilder sb = new StringBuilder();
+        String str;
+        while ((str = br.readLine()) != null) {
+            sb.append(str.trim());
+        }
+        //String -> Object로 parse -> JSONObject로 형변
+        JSONObject jsonObject = (JSONObject) (new JSONParser().parse(sb.toString()));
+
+        JSONObject config = (JSONObject) jsonObject.get("config");
+        JSONObject students = (JSONObject) jsonObject.get("students");
+        JSONObject student = (JSONObject) students.get("student0");
+
+        System.out.println(config.get("현재고유번호"));
+        System.out.println(student.get("이름"));
+
         System.out.println("========================================");
-//        System.out.println(jsonObject.get(""));
-
-
-
     }
+
     JSONObject data;
+
     public void registrate() throws IOException {
 //        Reader reader = new FileReader("");
         //파일에 데이터 작성하는 방법 : BufferedWriter, PrintWriter, FileWriter
@@ -58,7 +70,7 @@ public class StudentRegistration_BWH {
         JSONObject config = new JSONObject();
         JSONObject students = new JSONObject();
 
-    //a, b, c 클래스
+        //a, b, c 클래스
         //a.x1 = 23;
         String studentIndex;
         String studentName;
@@ -81,12 +93,12 @@ public class StudentRegistration_BWH {
             studentSubjectChoice = sc.nextLine();
             student.put("선택과목", studentSubjectChoice);
 
-            students.put("student"+i , student);
+            students.put("student" + i, student);
             studentIndexMax = Integer.toString(i);
         }
         config.put("현재고유번호", studentIndexMax);
-        data.put("config",config);
-        data.put("students",students);
+        data.put("config", config);
+        data.put("students", students);
 
         bw.write(data.toJSONString());
         bw.close();
