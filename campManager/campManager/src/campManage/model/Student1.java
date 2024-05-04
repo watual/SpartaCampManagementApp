@@ -58,10 +58,12 @@ public class Student1 {
     public void info(){
         System.out.println("====필수과목====");
         System.out.println("Java, 객체지향, Spring, JPA, MySQL");
+        System.out.println("최소 3개 입력 (그만 입력시 입력종료)");
     }
     public void info2(){
         System.out.println("=====선택과목=====");
         System.out.println("디자인 패턴, Spring Security, Redis, MongoDB");
+        System.out.println("최소 2개 입력 (그만 입력시 입력종료)");
     }
     //생성
     public void makeStu() throws Exception {
@@ -166,24 +168,44 @@ public class Student1 {
     public void delStu() throws Exception{
         Object obj = parser.parse(reader);
         JSONObject jsonObject = (JSONObject)obj;
-        reader.close();
+        System.out.println("================수강생 삭제===================");
         System.out.print("삭제할 수강생 ID 입력 : ");
         String id = sc.nextLine();
         try {
-            if (id.equals(jsonObject.get(id))) {
                 jsonObject.remove(id);
-            }
+
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+        System.out.println("삭제 완료");
+        try {
+            File jsonFile = new File("campManager/campManager/src/campManage/src/testjson.json");
+            FileWriter fileWriter = new FileWriter(jsonFile, false);
+            fileWriter.write(jsonObject.toJSONString());
+            fileWriter.close();
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
     }
+    //json 키값이 중복되면 자동 합쳐짐!
     //수정
     public void reStu() throws Exception{
         Object obj = parser.parse(reader);
         JSONObject jsonObject = (JSONObject)obj;
-        reader.close();
+        JSONObject reset = new JSONObject();
+        System.out.println("================수강생 수정===================");
         System.out.println("수정할 수강생 ID 입력");
+        reset = (JSONObject) jsonObject.get("tt2");
+        System.out.println(reset.get("필수 과목"));
 
     }
-
+    //조회
+    public void serStu() throws Exception{
+        System.out.println("================수강생 조회===================");
+        System.out.println("1. 전체 조회 2. ID 조회");
+        switch (sc.nextInt()) {
+            case 1 -> allStudent();
+            case 2 -> selectStudent();
+        }
+    }
 }
