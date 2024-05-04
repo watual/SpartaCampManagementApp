@@ -5,7 +5,7 @@ import campManage.src.DBConfig;
 import java.util.Scanner;
 
 public class StudentManagement_BWH {
-    public static void run() throws  Exception{
+    private static void run() throws  Exception{
         Scanner sc = new Scanner(System.in);
         StudentRegistration_BWH sr = new StudentRegistration_BWH();
         end:

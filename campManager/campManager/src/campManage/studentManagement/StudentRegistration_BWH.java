@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.Iterator;
 import java.util.Scanner;
 
 public class StudentRegistration_BWH {
@@ -50,6 +51,8 @@ public class StudentRegistration_BWH {
         JSONObject config = (JSONObject) jsonObject.get("config");
         JSONObject students = (JSONObject) jsonObject.get("students");
         JSONObject student = (JSONObject) students.get("student0");
+
+
 
         System.out.println(config.get("현재고유번호"));
         System.out.println(student.get("이름"));
