@@ -163,25 +163,27 @@ public class Student1 {
     }
 
     //삭제
-    public void delStu(){
-        //조회
-        System.out.println("삭제할 수강생 찾는 값");
-        //삭제
-    }
-    //수정
-    public void reStu(){
-        System.out.println("수정할 수강생 찾는 값");
-        //수정
-    }
-    //조회
-    public void serStu() throws Exception{
-        System.out.println("1. 전체 조회 2. id 조회");
-        switch (sc.nextInt()){
-            case 1 -> allStudent();
-            case 2 -> selectStudent();
-            default -> System.out.println("잘못된 값 입력");
-
+    public void delStu() throws Exception{
+        Object obj = parser.parse(reader);
+        JSONObject jsonObject = (JSONObject)obj;
+        reader.close();
+        System.out.print("삭제할 수강생 ID 입력 : ");
+        String id = sc.nextLine();
+        try {
+            if (id.equals(jsonObject.get(id))) {
+                jsonObject.remove(id);
+            }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
         }
     }
-}
+    //수정
+    public void reStu() throws Exception{
+        Object obj = parser.parse(reader);
+        JSONObject jsonObject = (JSONObject)obj;
+        reader.close();
+        System.out.println("수정할 수강생 ID 입력");
 
+    }
+
+}
