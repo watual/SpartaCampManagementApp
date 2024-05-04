@@ -5,14 +5,16 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Scanner;
 
 
 public class Student1 {
    private String ID;
    private String name;
-   private String stuCon;
+   private String[] stuCon ={"Red","Green","Yellow"};
    Subject subject=new Subject();
     //생성자
     public Student1() throws Exception {
@@ -24,11 +26,16 @@ public class Student1 {
     JSONObject studentInfo = new JSONObject();
     Reader reader = new FileReader("campManager/campManager/src/campManage/src/testjson.json");
     JSONParser parser = new JSONParser();
+    //readerclose
+    public void rdClose()throws Exception{
+        reader.close();
+    }
+
+
     // 전체 부분 조회 메서드
     public void allStudent() throws Exception {
         Object obj = parser.parse(reader);
         JSONObject jsonObject = (JSONObject)obj;
-        reader.close();
         JSONObject jsonRes = new JSONObject();
         JSONObject[] objs= new JSONObject[]{jsonObject};
         for (JSONObject object : objs){
@@ -38,21 +45,18 @@ public class Student1 {
                 jsonRes.put(key, object.get(key));
             }
         }
-        System.out.println(jsonRes);
+        System.out.println(Arrays.toString(jsonRes.toString().split("\\{")).replaceAll("\\}","\n"));
     }
     //아이디조회
     public void selectStudent() throws Exception {
-        try{
         System.out.print("id 입력 : ");
         sc.nextLine();
         String id = sc.nextLine();
         Object obj = parser.parse(reader);
         JSONObject jsonObject = (JSONObject)obj;
         reader.close();
-        System.out.println(jsonObject.get(id));}
-        catch(Exception e){
-            System.out.println(e.getMessage());
-        }
+        System.out.println(jsonObject.get(id));
+
     }
     //안내문
     public void info(){
@@ -70,10 +74,10 @@ public class Student1 {
 
         Object obj = parser.parse(reader);
         JSONObject jsonObject = (JSONObject)obj;
-        reader.close();
         JSONObject addStudent = new JSONObject();
         JSONArray jsonArray = new JSONArray();
         JSONArray jsonArray2 = new JSONArray();
+        JSONObject addSub = new JSONObject();
         boolean flag = true;
         System.out.println("========수강생 생성=========");
         while (flag) {
@@ -129,13 +133,13 @@ public class Student1 {
             String select = sc.nextLine();
             System.out.print("현재 상태(Green,Yellow,Red) : ");
             String con = sc.nextLine();
-            stuObj.put("이름", name);
-            stuObj.put("필수 과목", jsonArray);
-            stuObj.put("선택 과목", jsonArray2);
+            if(con.equals(stuCon[0])){}
             stuObj.put("상태", con);
+            stuObj.put("선택 과목", jsonArray2);
+            stuObj.put("필수 과목", jsonArray);
+            stuObj.put("이름", name);
             addStudent.put(id,stuObj);
             JSONObject jsonRes = new JSONObject();
-//            jsonObject.merge("학생들",addStudent, );
             JSONObject[] objs = new JSONObject[]{jsonObject,addStudent};
             for (JSONObject object : objs){
                 Iterator it = object.keySet().iterator();
@@ -193,10 +197,16 @@ public class Student1 {
         Object obj = parser.parse(reader);
         JSONObject jsonObject = (JSONObject)obj;
         JSONObject reset = new JSONObject();
+        JSONObject reset2 = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
         System.out.println("================수강생 수정===================");
         System.out.println("수정할 수강생 ID 입력");
         reset = (JSONObject) jsonObject.get("tt2");
-        System.out.println(reset.get("필수 과목"));
+        System.out.println(reset);
+        jsonArray.add("OO");
+        reset.put("필수 과목",jsonArray);
+        System.out.println(reset);
+
 
     }
     //조회

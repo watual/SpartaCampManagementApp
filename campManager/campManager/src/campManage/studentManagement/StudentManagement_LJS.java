@@ -30,5 +30,6 @@ public class StudentManagement_LJS {
             }
 
         }
+        st.rdClose();
     }
 }
