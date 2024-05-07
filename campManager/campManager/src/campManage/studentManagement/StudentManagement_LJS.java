@@ -7,10 +7,7 @@ import java.util.*;
 public class StudentManagement_LJS {
     // 필드
 
-    static HashMap<String, ArrayList<String>> a = new HashMap<>();
-
     //메서드
-
     //값 출력
     public static void run() throws Exception {
         Scanner s1 = new Scanner(System.in);
@@ -33,5 +30,6 @@ public class StudentManagement_LJS {
             }
 
         }
+        st.rdClose();
     }
 }
