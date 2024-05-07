@@ -1,5 +1,6 @@
 package campManage;
 
+import campManage.src.DBConfig;
 import campManage.studentManagement.StudentManagement_LJS;
 
 import java.util.Scanner;
@@ -15,6 +16,7 @@ import campManage.studentManagement.StudentManagement_LJS;
 public class CampManagementApp {
     public static void main(String[] args) throws Exception {
         Scanner sc = new Scanner(System.in);
+        DBConfig.initDBConfig();
         loop:
         while (true) {
             System.out.println("========================================");
