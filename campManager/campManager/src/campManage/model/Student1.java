@@ -16,6 +16,7 @@ public class Student1 {
    private String name;
    private String[] stuCon ={"Red","Green","Yellow"};
    Subject subject=new Subject();
+   Score1 score1=new Score1();
     //생성자
     public Student1() throws Exception {
 
@@ -43,9 +44,11 @@ public class Student1 {
             while (it.hasNext()){
                 String key = (String) it.next();
                 jsonRes.put(key, object.get(key));
+                System.out.println(key + ":" + object.get(key).toString().replaceAll("\\{","").replaceAll("\\}",""));
             }
         }
-        System.out.println(Arrays.toString(jsonRes.toString().split("\\{")).replaceAll("\\}","\n"));
+
+
     }
     //아이디조회
     public void selectStudent() throws Exception {
@@ -58,6 +61,8 @@ public class Student1 {
         System.out.println(jsonObject.get(id));
 
     }
+    //점수 초기화
+
     //안내문
     public void info(){
         System.out.println("====필수과목====");
@@ -75,8 +80,8 @@ public class Student1 {
         Object obj = parser.parse(reader);
         JSONObject jsonObject = (JSONObject)obj;
         JSONObject addStudent = new JSONObject();
-        JSONArray jsonArray = new JSONArray();
-        JSONArray jsonArray2 = new JSONArray();
+        JSONObject jsonArray = new JSONObject();
+        JSONObject jsonArray2 = new JSONObject();
         JSONObject addSub = new JSONObject();
         boolean flag = true;
         System.out.println("========수강생 생성=========");
@@ -97,7 +102,10 @@ public class Student1 {
                         if(must.equals("그만")){
                             break Loopout;
                         }else if(must.equals(subject.subject1[i])){
-                            jsonArray.add(must);
+                            for(int j=0; j<10; j++){
+                                addSub.put(j+1, "0");
+                                jsonArray.put(must,addSub);
+                            }
                         }
                     }
                     if(jsonArray.equals(must)){
@@ -119,7 +127,10 @@ public class Student1 {
                         if(may.equals("그만")){
                             break Loopout2;
                         }else if(may.equals(subject.subject2[i])){
-                            jsonArray2.add(may);
+                            for(int j=0; j<10; j++){
+                                addSub.put(j+1, "0");
+                                jsonArray2.put(may,addSub);
+                            }
                         }
                     }
                     if(jsonArray2.equals(may)){
@@ -139,16 +150,9 @@ public class Student1 {
             stuObj.put("필수 과목", jsonArray);
             stuObj.put("이름", name);
             addStudent.put(id,stuObj);
-            JSONObject jsonRes = new JSONObject();
-            JSONObject[] objs = new JSONObject[]{jsonObject,addStudent};
-            for (JSONObject object : objs){
-                Iterator it = object.keySet().iterator();
-                while (it.hasNext()){
-                    String key = (String) it.next();
-                    jsonRes.put(key, object.get(key));
-                }
-            }
-            System.out.println(jsonRes);
+
+            jsonObject.put("student",addStudent);
+            System.out.println(addStudent);
             File jsonFile = new File("campManager/campManager/src/campManage/src/testjson.json");
             FileWriter fileWriter = new FileWriter(jsonFile , false);
 
@@ -156,11 +160,11 @@ public class Student1 {
             System.out.println("더 추가 하시겠습니까? 1. 예 2. 아니요");
             switch (sc.nextInt()) {
                 case 1 :
-                    fileWriter.write(jsonRes.toJSONString());
+                    fileWriter.write(jsonObject.toJSONString());
                     flag = true;
                     break;
                 case 2 :
-                    fileWriter.write(jsonRes.toJSONString());
+                    fileWriter.write(jsonObject.toJSONString());
                     fileWriter.close();
                     flag = false;
                     break;
@@ -191,7 +195,8 @@ public class Student1 {
             System.out.println(e.getMessage());
         }
     }
-    //json 키값이 중복되면 자동 합쳐짐!
+
+    //json 키값이 중복되면 뒤에 입력된 값으로 변경됨!
     //수정
     public void reStu() throws Exception{
         Object obj = parser.parse(reader);
@@ -201,12 +206,16 @@ public class Student1 {
         JSONArray jsonArray = new JSONArray();
         System.out.println("================수강생 수정===================");
         System.out.println("수정할 수강생 ID 입력");
-        reset = (JSONObject) jsonObject.get("tt2");
+        String id = sc.nextLine();
+        reset = (JSONObject) jsonObject.get(id);
         System.out.println(reset);
-        jsonArray.add("OO");
         reset.put("필수 과목",jsonArray);
         System.out.println(reset);
 
+
+    }
+    //점수 수정
+    public void reScore() throws Exception{
 
     }
     //조회
@@ -216,6 +225,7 @@ public class Student1 {
         switch (sc.nextInt()) {
             case 1 -> allStudent();
             case 2 -> selectStudent();
+
         }
     }
 }
