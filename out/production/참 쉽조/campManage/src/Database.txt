@@ -1,4 +1,5 @@
-최지민;객체지향,Java,MySQL;Spring Security,디자인 패턴;Red;
+
+최지민:객체지향,Java,MySQL:Spring Security,디자인 패턴:Red:
 정지석;Spring,JPA,MySQL;디자인 패턴,Spring Security;Yellow;
 이인원;MySQL,객체지향,Spring;Redis,디자인 패턴;Yellow;
 박현지;MySQL,객체지향,JPA;디자인 패턴,Spring Security;Red;
@@ -27,4 +28,9 @@
 허동재;Java,Spring,객체지향;디자인 패턴,Redis;Green;
 나석원;MySQL,JPA,Spring;Spring Security,MongoDB;Yellow;
 김지민;Java,Spring,MySQL;Spring Security,MongoDB;Yellow;
-최동석;객체지향,MySQL,Java;Spring Security,디자인 패턴;Yellow;
+이름:최동석;객체지향,MySQL,Java;Spring Security,디자인 패턴;Yellow;
+
+3:원하님:응딩이:따가워요
+2:백원하씨:응딩이:따가워요
+123123:원하님:사랑해요:ㅋㅎㅋ
+32324:원하님:네:맞아요
