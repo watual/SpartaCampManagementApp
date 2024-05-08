@@ -1,12 +1,7 @@
 package campManage.studentManagement;
 
-import campManage.model.Score1;
-import campManage.model.Subject;
 import campManage.src.DBConfig;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-
-import java.io.*;
 import java.util.Iterator;
 import java.util.Scanner;
 
@@ -16,12 +11,10 @@ public class StudentManager {
    Scanner sc;
    JSONObject student;
    JSONObject emptySubject;
-   JSONParser parser;
 
     //생성자
     public StudentManager() throws Exception {
         sc = new Scanner(System.in);
-        parser = new JSONParser();
         emptySubject = (JSONObject) DBConfig.config.get("empty");
     }
 
@@ -31,10 +24,10 @@ public class StudentManager {
     public void serStu() throws Exception{
         System.out.println("================수강생 조회===================");
         System.out.println("1. 전체 조회 2. ID 조회");
-        switch (sc.nextInt()) {
-            case 1 -> allStudent();
-            case 2 -> selectStudent();
-
+        switch (sc.nextLine()) {
+            case "1" -> allStudent();
+            case "2" -> selectStudent();
+            default -> System.out.println("잘못입력!");
         }
     }
     // 전체 부분 조회 메서드
@@ -45,9 +38,11 @@ public class StudentManager {
     //아이디조회
     public void selectStudent() throws Exception {
         System.out.print("id 입력 : ");
-        sc.nextLine();
         String id = sc.nextLine();
-        System.out.println(DBConfig.students.get(id));
+        JSONObject getId = (JSONObject) DBConfig.students.get(id);
+        getId.keySet().stream().sorted().forEach(e ->{
+            System.out.println(e + " : " + getId.get(e));
+        });
 
     }
 
