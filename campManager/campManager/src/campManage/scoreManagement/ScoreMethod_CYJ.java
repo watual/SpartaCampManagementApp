@@ -11,6 +11,7 @@ import org.w3c.dom.ls.LSOutput;
 
 
 import java.io.*;
+import java.util.Iterator;
 import java.util.Scanner;
 
 public class ScoreMethod_CYJ {
@@ -33,7 +34,7 @@ public class ScoreMethod_CYJ {
 
             // 필수과목 입력 받기
             JSONObject requiredSubjects = new JSONObject();
-            System.out.println("필수과목을 입력하세요 (Java, 객체지향, Spring, JPA 순으로 입력):");
+            System.out.println("필수과목의 점수를 입력해주세요. (Java, 객체지향, Spring, JPA 순으로 입력):");
             requiredSubjects.put("Java", createSubjectJSONObject());
             requiredSubjects.put("객체지향", createSubjectJSONObject());
             requiredSubjects.put("Spring", createSubjectJSONObject());
@@ -43,7 +44,7 @@ public class ScoreMethod_CYJ {
 
             // 선택과목 입력 받기
             JSONObject electiveSubjects = new JSONObject();
-            System.out.println("선택과목을 입력하세요 (디자인 패턴, Spring Security, Redis, MongoDB 순으로 입력):");
+            System.out.println("선택과목의 점수를 입력해주세요. (디자인 패턴, Spring Security, Redis, MongoDB 순으로 입력):");
             electiveSubjects.put("디자인 패턴", createSubjectJSONObject());
             electiveSubjects.put("Spring Security", createSubjectJSONObject());
             electiveSubjects.put("Redis", createSubjectJSONObject());
@@ -101,73 +102,101 @@ public class ScoreMethod_CYJ {
         }
     }
 
+
     public static void updateRoundScoreBySubject() throws IOException, ParseException {
-        Scanner sc = new Scanner(System.in);
+        JSONParser parser = new JSONParser();
+        String fileName = "C:\\Users\\최유진\\Desktop\\SpartaCampManagementApp\\campManager\\campManager\\src\\campManage\\src\\testCYJ.json";
 
-        JSONObject j;
-        Object o = new JSONParser().parse(new FileReader("C:\\Users\\최유진\\Desktop\\SpartaCampManagementApp\\campManager\\campManager\\src\\campManage\\src\\testCYJ.json"));
-        j = (JSONObject) o;
+        try (Reader reader = new FileReader(fileName)) {
+            Scanner scanner = new Scanner(System.in);
+            JSONObject jsonObject = (JSONObject) parser.parse(reader);
 
-        System.out.println("고유번호를 입력하세요.");
-        long studentId = sc.nextLong();
+            System.out.print("학생 고유번호(studentId)를 입력하세요: ");
+            String studentId = scanner.nextLine();
 
-        Long jsonStudentId = (Long) j.get("고유번호");
-        String jsonSubjectName = (String) j.get("과목");
-        Long jsonRound = (Long) j.get("회차");
-        Long storedScore = (Long) j.get("점수");
+            if (jsonObject.containsKey(studentId)) {
+                JSONObject studentObj = (JSONObject) jsonObject.get(studentId);
 
-        if (studentId == jsonStudentId) {
-            // 입력한 과목명과 회차에 해당하는 점수를 JSON 파일에서 가져옴
-            System.out.println("고유번호: " + jsonStudentId);
-            System.out.println("과목명: " + jsonSubjectName);
-            System.out.println("회차: " + jsonRound);
-            System.out.println("점수: " + storedScore);
+                String name = (String) studentObj.get("이름");
+                JSONObject requiredSubjects = (JSONObject) studentObj.get("필수과목");
+                JSONObject optionalSubjects = (JSONObject) studentObj.get("선택과목");
 
-            sc.nextLine(); // 버퍼의 개행 문자를 비우기 위해 추가
+                System.out.println("학생 이름: " + name);
+                System.out.println("필수 과목:");
+                printSubjects(requiredSubjects);
+                System.out.println("선택 과목:");
+                printSubjects(optionalSubjects);
 
-            System.out.println("수정할 과목을 입력하세요.");
-            String subjectName = sc.nextLine();
+                System.out.print("수정할 과목명을 입력하세요: ");
+                String subjectName = scanner.nextLine();
 
-            if (subjectName.equals(jsonSubjectName)) {
-                System.out.println("변경할 회차를 입력해주세요");
-                int round = sc.nextInt();
-                sc.nextLine();
+                System.out.print("수정할 회차를 입력하세요: ");
+                String round = scanner.nextLine();
 
-                if (round == jsonRound) {
-                    System.out.println("변경할 점수를 입력해주세요");
-                    int score = sc.nextInt();
+                System.out.print("수정할 점수를 입력하세요: ");
+                int newScore = scanner.nextInt();
 
-                    j.put("점수", score);
-
-                    FileWriter fileWriter = new FileWriter("C:\\Users\\최유진\\Desktop\\SpartaCampManagementApp\\campManager\\campManager\\src\\campManage\\src\\testCYJ.json");
-                    fileWriter.write(j.toJSONString());
-                    fileWriter.close();
+                JSONObject subjectsToUpdate;
+                if (requiredSubjects.containsKey(subjectName)) {
+                    subjectsToUpdate = requiredSubjects;
+                } else if (optionalSubjects.containsKey(subjectName)) {
+                    subjectsToUpdate = optionalSubjects;
                 } else {
-                    System.out.println("회차 틀림");
+                    System.out.println("해당 과목은 존재하지 않습니다.");
+                    return;
                 }
+
+                JSONObject subjectScores = (JSONObject) subjectsToUpdate.get(subjectName);
+                subjectScores.put(round, newScore);
+
+                // JSON 파일 업데이트
+                try (FileWriter fileWriter = new FileWriter(fileName)) {
+                    fileWriter.write(jsonObject.toJSONString());
+                    System.out.println("점수가 성공적으로 수정되었습니다.");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
             } else {
-                System.out.println("과목명 틀림");
+                System.out.println("해당 학생 고유번호가 존재하지 않습니다.");
             }
-        } else {
-            System.out.println("고유번호 틀림");
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void printSubjects(JSONObject subjects) {
+        Iterator<String> subjectKeys = subjects.keySet().iterator();
+        while (subjectKeys.hasNext()) {
+            String subjectName = subjectKeys.next();
+            JSONObject subjectScores = (JSONObject) subjects.get(subjectName);
+
+            System.out.println("과목: " + subjectName);
+            Iterator<String> roundKeys = subjectScores.keySet().iterator();
+            while (roundKeys.hasNext()) {
+                String round = roundKeys.next();
+                int score = Integer.parseInt(subjectScores.get(round).toString());
+                System.out.println("회차 " + round + ": " + score);
+            }
         }
     }
 
     public static void inquireRoundGradeBySubject() throws IOException, ParseException {
 
-        JSONObject j;
-        Object o = new JSONParser().parse(new FileReader("C:\\Users\\최유진\\Desktop\\SpartaCampManagementApp\\campManager\\campManager\\src\\campManage\\src\\testCYJ.json"));
-        j = (JSONObject) o;
-
-        Long jsonRound = (Long) j.get("회차");
-        Long storedScore = (Long) j.get("점수");
-
-        Grade grade = calculateRequiredSubjectGrade(storedScore);
-        System.out.println(grade);
+//        JSONObject j;
+//        Object o = new JSONParser().parse(new FileReader("C:\\Users\\최유진\\Desktop\\SpartaCampManagementApp\\campManager\\campManager\\src\\campManage\\src\\testCYJ.json"));
+//        j = (JSONObject) o;
+//
+//        Long jsonRound = (Long) j.get("회차");
+//        Long storedScore = (Long) j.get("점수");
+//
+//        Grade grade = calculateRequiredSubjectGrade(storedScore);
+//        calculateOptionalSubjectGrade();
+//        System.out.println(grade);
 
     }
 
-    private static Grade calculateRequiredSubjectGrade(long score) {
+    private static Grade calculateRequiredSubjectGrade(int score) {
         if (score >= 95) {
             return Grade.A;
         } else if (score >= 90) {
@@ -177,6 +206,22 @@ public class ScoreMethod_CYJ {
         } else if (score >= 70) {
             return Grade.D;
         } else if (score >= 60) {
+            return Grade.F;
+        } else {
+            return Grade.N;
+        }
+    }
+
+    private Grade calculateOptionalSubjectGrade(int score) {
+        if (score >= 90) {
+            return Grade.A;
+        } else if (score >= 80) {
+            return Grade.B;
+        } else if (score >= 70) {
+            return Grade.C;
+        } else if (score >= 60) {
+            return Grade.D;
+        } else if (score >= 50) {
             return Grade.F;
         } else {
             return Grade.N;

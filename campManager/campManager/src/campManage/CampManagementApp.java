@@ -2,6 +2,7 @@ package campManage;
 
 import campManage.studentManagement.StudentManagement_LJS;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import campManage.scoreManagement.ScoreManagement;
@@ -14,6 +15,7 @@ import campManage.studentManagement.StudentManagement_LJS;
 
 public class CampManagementApp {
     public static void main(String[] args) throws Exception {
+        ArrayList<Integer> intList = new ArrayList<Integer>();
         Scanner sc = new Scanner(System.in);
         loop:
         while (true) {
