@@ -11,8 +11,7 @@ import org.w3c.dom.ls.LSOutput;
 
 
 import java.io.*;
-import java.util.Iterator;
-import java.util.Scanner;
+import java.util.*;
 
 public class ScoreMethod_CYJ {
 
@@ -394,9 +393,164 @@ public class ScoreMethod_CYJ {
 
     }
 
+
+
     public static void avgGradeForRequiredSubjectByState() {
-        System.out.println("아직 안했음다");
+        // 특정 상태 수강생들의 필수 과목 평균 등급을 조회
+        System.out.println("특정 상태 수강생들의 필수 과목 평균 등급을 조회합니다.");
+        System.out.println("상태를 입력하세요(Green, Red, Yellow)");
+        String state = scanner.nextLine();
+
+        switch (state) {
+            case "Green":
+                avgCalculate(state);
+                break;
+            case "Yellow":
+                avgCalculate(state);
+                break;
+            case "Red":
+                avgCalculate(state);
+                break;
+            default:
+                System.out.println("상태를 잘 못 입력하셨습니다.");
+                return;
+        }
     }
+
+    static ArrayList<String> studentIdArr = new ArrayList<>();;
+    static int javaCnt;
+    static int objectCnt;
+    static int springCnt;
+    static int jpaCnt;
+    static int mySqlCnt;
+    static int sumScore;
+    static int cnt;
+    static int javaAvgSum;
+    static int objectAvgSum;
+    static int springAvgSum;
+    static int jpaAvgSum;
+    static int mySqlAvgSum;
+    static int javaAvg;
+    static int objectAvg;
+    static int springAvg;
+    static int jpaAvg;
+    static int mySqlAvg;
+
+    public static void avgCalculate(String state) {
+        //같은 상태에 있는 학생들의 고유번호 arrayList
+        ArrayList<String> studentIdArr = findStudentIdInSameState(state);
+
+        JSONObject requiredSubjects;
+
+        //studentIdArr 돌면서 각각의 필수과목 평균 계산하기
+        for (String id : studentIdArr) {
+            JSONObject studentObj = (JSONObject) DBConfig.students.get(id);
+            requiredSubjects = (JSONObject) studentObj.get("필수과목");
+
+            Iterator<String> requiredSubjectsId = requiredSubjects.keySet().iterator();
+
+
+            while (requiredSubjectsId.hasNext()) {
+                String selectedSubject = requiredSubjectsId.next();
+                switch (selectedSubject) {
+                    case "Java" :
+                        javaAvgSum += innerAvgCalculate(selectedSubject, requiredSubjects);
+                        javaCnt++;
+                        break;
+                    case "객체지향":
+                        objectAvgSum += innerAvgCalculate(selectedSubject, requiredSubjects);
+                        objectCnt++;
+                        break;
+                    case "Spring":
+                        springAvgSum += innerAvgCalculate(selectedSubject, requiredSubjects);
+                        springCnt++;
+                        break;
+                    case "JPA":
+                        jpaAvgSum += innerAvgCalculate(selectedSubject, requiredSubjects);
+                        jpaCnt++;
+                        break;
+                    case "mySQL":
+                        mySqlAvgSum += innerAvgCalculate(selectedSubject, requiredSubjects);
+                        mySqlCnt++;
+                        break;
+                }
+            }
+        }
+
+        int javaAvgScorePerState = avgCalculatePerSubject(javaCnt, javaAvgSum);
+        Grade javaGrade = calculateRequiredSubjectGrade(javaAvgScorePerState);
+
+        int objectAvgScorePerState = avgCalculatePerSubject(objectCnt, objectAvgSum);
+        Grade objectGrade = calculateRequiredSubjectGrade(objectAvgScorePerState);
+
+        int springAvgScorePerState = avgCalculatePerSubject(springCnt, springAvgSum);
+        Grade springGrade = calculateRequiredSubjectGrade(springAvgScorePerState);
+
+        int jpaAvgScorePerState = avgCalculatePerSubject(jpaCnt, jpaAvgSum);
+        Grade jpaGrade = calculateRequiredSubjectGrade(jpaAvgScorePerState);
+
+        int mySQLAvgScorePerState = avgCalculatePerSubject(mySqlCnt, mySqlAvgSum);
+        Grade mySQLGrade = calculateRequiredSubjectGrade(mySQLAvgScorePerState);
+
+
+        System.out.println("Java 평균점수: " + javaAvgScorePerState + "점, " + "등급: " + javaGrade);
+        System.out.println("객체지향 평균점수: " + objectAvgScorePerState + "점, " + "등급: " + objectGrade);
+        System.out.println("Spring 평균점수: " + springAvgScorePerState + "점, " + "등급: " + springGrade);
+        System.out.println("JPA 평균점수: " + jpaAvgScorePerState + "점, " + "등급: " + jpaGrade);
+        System.out.println("MySQL 평균점수: " + mySQLAvgScorePerState + "점, " + "등급: " + mySQLGrade);
+
+
+    }
+
+
+    public static ArrayList<String> findStudentIdInSameState(String state) {
+        JSONObject studentObj = (JSONObject) DBConfig.students;
+        Iterator<String> studentIdKeys = studentObj.keySet().iterator();
+
+        studentIdArr.clear();
+
+        while (studentIdKeys.hasNext()){
+            String studentId= studentIdKeys.next();
+            studentObj = (JSONObject) DBConfig.students.get(studentId);
+            String stateFlag = (String)studentObj.get("상태");
+            if (stateFlag.equals(state)) {
+                studentIdArr.add(studentId);
+            }
+        }
+
+        if (studentIdArr.isEmpty()) {
+            System.out.println("해당 상태에 해당하는 학생이 없습니다.");
+        }
+
+        return studentIdArr;
+
+    }
+
+    public static int innerAvgCalculate(String selectedSubject, JSONObject requiredSubjects) {
+        JSONObject elementSubject = (JSONObject) requiredSubjects.get(selectedSubject);
+        Iterator<String> roundKeys = elementSubject.keySet().iterator();
+        while (roundKeys.hasNext()) {
+            cnt++;
+            String round = roundKeys.next();
+            int score = Integer.parseInt(elementSubject.get(round).toString());
+            sumScore = sumScore + score;
+        }
+        int avgScore = sumScore/cnt;
+        return avgScore;
+    }
+
+
+    public static int avgCalculatePerSubject(int perCnt, int perAvgSum) {
+        int perAvg;
+        if (perCnt == 0) {
+            perAvg = 0;
+        } else {
+            perAvg = perAvgSum / perCnt;
+        }
+        return perAvg;
+    }
+
+
 
 }
 
