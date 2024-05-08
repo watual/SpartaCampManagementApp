@@ -1,5 +1,6 @@
 package campManage;
 
+import campManage.src.DBConfig;
 import campManage.studentManagement.StudentManagement_LJS;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public class CampManagementApp {
     public static void main(String[] args) throws Exception {
         ArrayList<Integer> intList = new ArrayList<Integer>();
         Scanner sc = new Scanner(System.in);
+        DBConfig.initDBConfig();
         loop:
         while (true) {
             System.out.println("========================================");
