@@ -334,5 +334,69 @@ public class ScoreMethod_CYJ {
     public enum Grade {
         A, B, C, D, F, N
     }
+
+    public static void avgGradeBySubject() {
+        // 수강생의 과목별 평균 등급을 조회
+        System.out.print("학생 고유번호(studentId)를 입력하세요: ");
+        String studentId = scanner.nextLine();
+
+        if (DBConfig.students.containsKey(studentId)) {
+            JSONObject studentObj = (JSONObject) DBConfig.students.get(studentId);
+
+            String name = (String) studentObj.get("이름");
+            JSONObject requiredSubjects = (JSONObject) studentObj.get("필수과목");
+            JSONObject optionalSubjects = (JSONObject) studentObj.get("선택과목");
+
+            System.out.println("학생 이름: " + name);
+            System.out.print("필수 과목:");
+            printSubjects(requiredSubjects);
+            System.out.print("선택 과목:");
+            printSubjects(optionalSubjects);
+
+            System.out.println("평균 등급을 확인할 과목을 입력하세요.");
+            String subjectName = scanner.nextLine();
+
+            int sumScore = 0;
+            int cnt = 0;
+
+            if (requiredSubjects.containsKey(subjectName)) {
+                JSONObject elementSubject = (JSONObject) requiredSubjects.get(subjectName);
+                Iterator<String> roundKeys = elementSubject.keySet().iterator();
+                while (roundKeys.hasNext()) {
+                    cnt++;
+                    String round = roundKeys.next();
+                    int score = Integer.parseInt(elementSubject.get(round).toString());
+                    sumScore += score;
+                }
+                int avgScore = sumScore/cnt;
+                System.out.println("평균점수: " + avgScore);
+                Grade grade = calculateRequiredSubjectGrade(avgScore);
+                System.out.println("선택한 과목의 평균 등급은" + grade + "입니다.");
+
+            } else if (optionalSubjects.containsKey(subjectName)) {
+                JSONObject elementSubject = (JSONObject) optionalSubjects.get(subjectName);
+                Iterator<String> roundKeys = elementSubject.keySet().iterator();
+                while (roundKeys.hasNext()) {
+                    cnt++;
+                    String round = roundKeys.next();
+                    int score = Integer.parseInt(elementSubject.get(round).toString());
+                    sumScore += score;
+                }
+                int avgScore = sumScore/cnt;
+                System.out.println("평균점수: " + avgScore);
+                Grade grade = calculateOptionalSubjectGrade(avgScore);
+                System.out.println("선택한 과목의 평균 등급은" + grade + "입니다.");
+            } else {
+                System.out.println("해당 과목은 존재하지 않습니다.");
+                return;
+            }
+        }
+
+    }
+
+    public static void avgGradeForRequiredSubjectByState() {
+        System.out.println("아직 안했음다");
+    }
+
 }
 
