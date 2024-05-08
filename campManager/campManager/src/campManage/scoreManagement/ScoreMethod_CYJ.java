@@ -28,9 +28,6 @@ public class ScoreMethod_CYJ {
     }
     //생성하기
     public static void crateScore() throws IOException, ParseException {
-        Scanner scanner = new Scanner(System.in);
-        JSONObject database = new JSONObject();
-
         while (true) {
             System.out.println("새로운 학생 정보를 입력하세요 (종료하려면 'exit' 입력)");
 
@@ -44,6 +41,7 @@ public class ScoreMethod_CYJ {
             JSONObject studentInfo = new JSONObject();
 
             // 필수과목 입력 받기
+            //requiredSubjects : 필수과목
             JSONObject requiredSubjects = new JSONObject();
             System.out.println("필수과목의 점수를 입력해주세요. (Java, 객체지향, Spring, JPA 순으로 입력):");
             requiredSubjects.put("Java", createSubjectJSONObject());
