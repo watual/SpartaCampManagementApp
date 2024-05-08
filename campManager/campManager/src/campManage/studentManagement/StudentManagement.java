@@ -15,12 +15,12 @@ public class StudentManagement {
             System.out.println("3. 삭제");
             System.out.println("4. 조회");
             System.out.println("5. 종료");
-            switch (s1.nextInt()) {
-                case 1 -> st.makeStu();
-                case 2 -> st.reStu();
-                case 3 -> st.delStu();
-                case 4 -> st.serStu();
-                case 5 -> flag = false;
+            switch (s1.nextLine()) {
+                case "1" -> st.makeStu();
+                case "2" -> st.reStu();
+                case "3" -> st.delStu();
+                case "4" -> st.serStu();
+                case "5" -> flag = false;
                 default -> {
                     System.out.println("올바른 번호를 입력해주세요");
                 }

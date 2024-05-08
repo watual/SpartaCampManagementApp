@@ -68,4 +68,31 @@ public class DBConfig {
         bw.write(DBConfig.dataJson.toJSONString());
         bw.close();
     }
+    public static void modifyStudent(String studentId, JSONObject studentJson) throws IOException {
+        students.put(studentId, studentJson);
+        updateDatabase();
+    }
+    public static void modifySubjects(String studentId, String sortOfSubjects, JSONObject subjects){
+        if(sortOfSubjects.equals("필수과목") || sortOfSubjects.equals("선택과목")){
+
+            students.put(studentId, subjects);
+        }
+    }
+    public static void modifySubject(String studentId, String subjectName, String modifyName,JSONObject subjectJson){
+        JSONObject student = (JSONObject) students.get(studentId);
+
+        if(((JSONObject) student.get("필수과목")).containsKey(subjectName)){
+            JSONObject subjectSort = (JSONObject) student.get("필수과목");
+            JSONObject subject = (JSONObject) subjectSort.get(subjectName);
+
+            subjectSort.remove(subjectName);
+
+            student.put("필수과목",subjectSort);
+            students.put(studentId,student);
+
+        } else if (((JSONObject) student.get("선택과목")).containsKey(subjectName)) {
+            JSONObject subjectSort = (JSONObject) student.get("선택과목");
+            JSONObject subject = (JSONObject) subjectSort.get(subjectName);
+        }
+    }
 }

@@ -7,6 +7,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.*;
+import java.util.Iterator;
 import java.util.Scanner;
 
 
@@ -58,16 +59,7 @@ public class StudentManager {
     // 전체 부분 조회 메서드
     public void allStudent() throws Exception {
         inquiryAll();
-//        JSONObject jsonRes = new JSONObject();
-//        JSONObject[] objs= new JSONObject[]{jsonObject};
-//        for (JSONObject object : objs){
-//            Iterator it = object.keySet().iterator();
-//            while (it.hasNext()){
-//                String key = (String) it.next();
-//                jsonRes.put(key, object.get(key));
-//                System.out.println(key + ":" + object.get(key).toString().replaceAll("\\{","").replaceAll("\\}",""));
-//            }
-//        }
+
     }
     //아이디조회
     public void selectStudent() throws Exception {
@@ -234,6 +226,7 @@ public class StudentManager {
         JSONObject resetSubject;
         JSONObject subject1 = new JSONObject();
         JSONObject originSubject;
+        JSONObject studentFeel =(JSONObject) DBConfig.config.get("상태");
         System.out.println("================수강생 수정===================");
         inquiryAll();
         System.out.println("수정할 수강생 ID 입력");
@@ -243,24 +236,67 @@ public class StudentManager {
         switch (sc.nextLine()){
             case "1" :
                 JSONObject newSubjectNum = new JSONObject();
-                System.out.println("수정할 과목 입력");
-                String subId = sc.nextLine();
+                System.out.println("변경할 보유과목 선택");
+                String subMainId = sc.nextLine();
                 originSubject = (JSONObject) resetSubject.get("필수과목");
-                originSubject.remove(subId);
-                System.out.println("변경할 과목 입력");
+                originSubject.remove(subMainId);
+                System.out.println("변경할 목표과목 선택");
                 String newSub = sc.nextLine();
                 for(int j=0; j<10; j++){
                     newSubjectNum.put(j+1, "0");
 
                     subject1.put(newSub,newSubjectNum);
                 }
-                resetSubject.put("필수과목",subject1);
-//            case 2 -> ;
+                JSONObject subjectMerge = new JSONObject();
+                JSONObject[] objs= new JSONObject[]{subject1,originSubject};
+                for (JSONObject object : objs){
+                Iterator it = object.keySet().iterator();
+                while (it.hasNext()) {
+                   String key = (String) it.next();
+                   subjectMerge.put(key, object.get(key));
+                }
+                }
+                resetSubject.put("필수과목",subjectMerge);
+
+                break;
+            case "2" :
+                JSONObject newSubjectNum2 = new JSONObject();
+                System.out.println("변경할 보유과목 선택 1.디자인 패턴");
+                String subSubId = sc.nextLine();
+                originSubject = (JSONObject) resetSubject.get("선택과목");
+                originSubject.remove(subSubId);
+                System.out.println("변경할 목표과목 선택");
+                String newSu = sc.nextLine();
+                for(int j=0; j<10; j++){
+                    newSubjectNum2.put(j+1, "0");
+
+                    subject1.put(newSu,newSubjectNum2);
+                }
+                JSONObject subjectMerge2 = new JSONObject();
+                JSONObject[] objs2= new JSONObject[]{subject1,originSubject};
+                for (JSONObject object : objs2){
+                    Iterator it = object.keySet().iterator();
+                    while (it.hasNext()) {
+                        String key = (String) it.next();
+                        subjectMerge2.put(key, object.get(key));
+                    }
+                }
+                resetSubject.put("선택과목",subjectMerge2);
+
+                break;
             case "3" :
+                JSONObject newFeel;
                 resetSubject.remove("상태");
-                System.out.println("변경할 상태 입력 Red, Yellow, Green");
-                String newFeel = sc.nextLine();
-                resetSubject.put("상태",newFeel);
+                System.out.println("변경할 상태 입력 1. Red, 2. Yellow, 3. Green");
+//                String newFeel = sc.nextLine();
+                switch (sc.nextLine()){
+                    case "1" ->newFeel = (JSONObject) studentFeel.get("1");
+                    case "2" ->newFeel = (JSONObject) studentFeel.get("2");
+                    case "3" ->newFeel = (JSONObject) studentFeel.get("3");
+                    default -> newFeel = null;
+                }
+                resetSubject.put("상태",newFeel.toString());
+                break;
         }
         DBConfig.students.put(id,resetSubject);
         System.out.println("수정 완료!");
