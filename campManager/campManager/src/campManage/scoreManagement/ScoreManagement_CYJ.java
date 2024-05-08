@@ -19,7 +19,7 @@ public class ScoreManagement_CYJ {
             System.out.print("관리 항목을 선택하세요...");
 
             Scanner sc = new Scanner(System.in);
-            int scoreManagementOption = sc.nextInt();
+            int scoreManagementOption = Integer.parseInt(sc.nextLine());
 
             switch (scoreManagementOption) {
                 case 1 -> scoreMethod_cyj.crateScore(); // 수강생의 과목별 시험 회차 및 점수 등록

@@ -13,9 +13,9 @@ public class DBConfig {
     public static final String PATH_BWH = "campManager/campManager/src/campManage/src/Database_백원하.txt";
     public static final String PATH_json_BWH = "campManager/campManager/src/campManage/src/Database_백원하.json";
 
-    public static JSONObject dataJson;
-    public static JSONObject config;
-    public static JSONObject students;
+    public static JSONObject dataJson;  //전체 데이터
+    public static JSONObject config;    //설정 데이터
+    public static JSONObject students;  //학생들 데이터 ( 과목, 상태, 점수 )
 
     public static void initDBConfig() throws IOException, ParseException {
         /*
