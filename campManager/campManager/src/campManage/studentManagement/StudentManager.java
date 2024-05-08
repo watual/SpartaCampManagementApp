@@ -9,7 +9,6 @@ import java.util.Scanner;
 public class StudentManager {
 
    Scanner sc;
-   JSONObject student;
    JSONObject emptySubject;
 
     //생성자
@@ -123,7 +122,7 @@ public class StudentManager {
 
             }
             String addStuFeel;
-            System.out.print("현재 상태 1. Red 2. Yellow 3. Green");
+            System.out.println("현재 상태 1. Red 2. Yellow 3. Green");
             switch (sc.nextLine()){
                 case "1" -> addStuFeel = (String)studentFeel.get("1");
                 case "2" -> addStuFeel = (String)studentFeel.get("2");
@@ -153,7 +152,7 @@ public class StudentManager {
             margeStudent.put("students",addStudent);   //student{1, 2, 3, 4}, config
 
             JSONObject studentMerge = new JSONObject();
-            JSONObject[] objs= new JSONObject[]{student,addStudent};
+            JSONObject[] objs= new JSONObject[]{DBConfig.students,addStudent};
             for (JSONObject object : objs){
                 Iterator it = object.keySet().iterator();
                 while (it.hasNext()) {
@@ -301,7 +300,7 @@ public class StudentManager {
                     case "1" ->newFeel = (String) studentFeel.get("1");
                     case "2" ->newFeel = (String) studentFeel.get("2");
                     case "3" ->newFeel = (String) studentFeel.get("3");
-                    default -> newFeel = null;
+                    default -> throw new Exception();
                 }
                 resetSubject.put("상태",newFeel);
                 break;
