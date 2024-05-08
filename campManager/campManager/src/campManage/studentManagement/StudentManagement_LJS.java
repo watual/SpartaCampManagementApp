@@ -1,7 +1,5 @@
 package campManage.studentManagement;
 
-import campManage.model.Student1;
-
 import java.util.*;
 
 public class StudentManagement_LJS {
@@ -11,7 +9,7 @@ public class StudentManagement_LJS {
     //값 출력
     public static void run() throws Exception {
         Scanner s1 = new Scanner(System.in);
-        Student1 st = new Student1();
+        StudentManager st = new StudentManager();
         boolean flag = true;
         while (flag) {
             System.out.println("==========수강생 처리=========");
@@ -30,6 +28,6 @@ public class StudentManagement_LJS {
             }
 
         }
-        st.rdClose();
+
     }
 }

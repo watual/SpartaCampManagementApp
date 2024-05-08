@@ -7,7 +7,7 @@
       <sourceFolder url="file://$MODULE_DIR$/campManager/campManager/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/camp-management-app_참고용/src" isTestSource="false" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="openjdk-22" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library" exported="">
       <library>
