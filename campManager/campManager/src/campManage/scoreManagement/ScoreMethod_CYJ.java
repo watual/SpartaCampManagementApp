@@ -15,6 +15,17 @@ import java.util.Iterator;
 import java.util.Scanner;
 
 public class ScoreMethod_CYJ {
+
+    Scanner scanner;
+    JSONObject database;
+    JSONObject students;
+
+    public ScoreMethod_CYJ(){
+
+        database = new JSONObject();
+        students = new JSONObject();
+
+    }
     //생성하기
     public static void crateScore() throws IOException, ParseException {
         Scanner scanner = new Scanner(System.in);
@@ -94,7 +105,7 @@ public class ScoreMethod_CYJ {
     }
 
     private static void saveJSONToFile(JSONObject json) {
-        try (FileWriter fileWriter = new FileWriter("C:\\Users\\최유진\\Desktop\\SpartaCampManagementApp\\campManager\\campManager\\src\\campManage\\src\\testCYJ.json")) {
+        try (FileWriter fileWriter = new FileWriter("C:\\Users\\최유진\\Desktop\\SpartaCampManagementApp\\campManager\\campManager\\src\\campManage\\src\\test2.json")) {
             fileWriter.write(json.toString());
             System.out.println("JSON DB 파일이 성공적으로 생성되었습니다");
         } catch (IOException e) {
@@ -105,7 +116,7 @@ public class ScoreMethod_CYJ {
 
     public static void updateRoundScoreBySubject() throws IOException, ParseException {
         JSONParser parser = new JSONParser();
-        String fileName = "C:\\Users\\최유진\\Desktop\\SpartaCampManagementApp\\campManager\\campManager\\src\\campManage\\src\\testCYJ.json";
+        String fileName = "C:\\Users\\최유진\\Desktop\\SpartaCampManagementApp\\campManager\\campManager\\src\\campManage\\src\\test2.json";
 
         try (Reader reader = new FileReader(fileName)) {
             Scanner scanner = new Scanner(System.in);
@@ -182,7 +193,65 @@ public class ScoreMethod_CYJ {
     }
 
     public static void inquireRoundGradeBySubject() throws IOException, ParseException {
+        JSONParser parser = new JSONParser();
+        String fileName = "C:\\Users\\최유진\\Desktop\\SpartaCampManagementApp\\campManager\\campManager\\src\\campManage\\src\\test2.json";
 
+        try (Reader reader = new FileReader(fileName)) {
+            Scanner scanner = new Scanner(System.in);
+            JSONObject jsonObject = (JSONObject) parser.parse(reader);
+
+            System.out.print("학생 고유번호(studentId)를 입력하세요: ");
+            String studentId = scanner.nextLine();
+
+            if (jsonObject.containsKey(studentId)) {
+                JSONObject studentObj = (JSONObject) jsonObject.get(studentId);
+
+                String name = (String) studentObj.get("이름");
+                JSONObject requiredSubjects = (JSONObject) studentObj.get("필수과목");
+                JSONObject optionalSubjects = (JSONObject) studentObj.get("선택과목");
+
+                System.out.println("학생 이름: " + name);
+                System.out.println("필수 과목:");
+                printSubjects(requiredSubjects);
+                System.out.println("선택 과목:");
+                printSubjects(optionalSubjects);
+
+                System.out.print("수정할 과목명을 입력하세요: ");
+                String subjectName = scanner.nextLine();
+
+                System.out.print("수정할 회차를 입력하세요: ");
+                String round = scanner.nextLine();
+
+                System.out.print("수정할 점수를 입력하세요: ");
+                int newScore = scanner.nextInt();
+
+                JSONObject subjectsToUpdate;
+                if (requiredSubjects.containsKey(subjectName)) {
+                    subjectsToUpdate = requiredSubjects;
+                } else if (optionalSubjects.containsKey(subjectName)) {
+                    subjectsToUpdate = optionalSubjects;
+                } else {
+                    System.out.println("해당 과목은 존재하지 않습니다.");
+                    return;
+                }
+
+                JSONObject subjectScores = (JSONObject) subjectsToUpdate.get(subjectName);
+                subjectScores.put(round, newScore);
+
+                // JSON 파일 업데이트
+                try (FileWriter fileWriter = new FileWriter(fileName)) {
+                    fileWriter.write(jsonObject.toJSONString());
+                    System.out.println("점수가 성공적으로 수정되었습니다.");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            } else {
+                System.out.println("해당 학생 고유번호가 존재하지 않습니다.");
+            }
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
 //        JSONObject j;
 //        Object o = new JSONParser().parse(new FileReader("C:\\Users\\최유진\\Desktop\\SpartaCampManagementApp\\campManager\\campManager\\src\\campManage\\src\\testCYJ.json"));
 //        j = (JSONObject) o;
