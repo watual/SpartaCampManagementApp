@@ -4,6 +4,7 @@ import campManage.src.DBConfig;
 import campManage.studentManagement.StudentManagement;
 import campManage.studentManagement.StudentManagement_LJS;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import campManage.scoreManagement.ScoreManagement_BWH;
@@ -13,6 +14,7 @@ import campManage.studentManagement.StudentManagement_KDH;
 
 public class CampManagementApp {
     public static void main(String[] args) throws Exception {
+        ArrayList<Integer> intList = new ArrayList<Integer>();
         Scanner sc = new Scanner(System.in);
         DBConfig.initDBConfig();
         loop:
