@@ -9,7 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 public class DBConfig {
-    public static final String PATH = "campManager/campManager/src/campManage/src/Database.txt";
+    public static final String PATH = "campManager/campManager/src/campManage/src/testjson.json";
     public static final String PATH_BWH = "campManager/campManager/src/campManage/src/Database_백원하.txt";
     public static final String PATH_json_BWH = "campManager/campManager/src/campManage/src/Database_백원하.json";
 
@@ -33,7 +33,7 @@ public class DBConfig {
             - 한번에 하나의 문자를 읽기 때문에 작은 파일이나 데이터를 문자 단위로 처리해야 할 때 유용
          */
         //등록 -> DB.txt 파일에 데이터 추가
-        String path = DBConfig.PATH_json_BWH;
+        String path = DBConfig.PATH;
 
         //JSON DB 파일 호출
         BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path), StandardCharsets.UTF_8));
@@ -50,7 +50,7 @@ public class DBConfig {
         try {
             dataJson = (JSONObject) (new JSONParser().parse(sb.toString()));
             config = (JSONObject) dataJson.get("config");
-            students = (JSONObject) dataJson.get("students");
+            students = (JSONObject) dataJson.get("student");
         }catch (Exception e){
             System.out.println("데이터가 없습니다");
             //JSON 데이터가 없을때 초기생성
@@ -61,11 +61,38 @@ public class DBConfig {
     public static void updateDatabase() throws IOException {
         //dataJson에 config, students 병합
         dataJson.put("config",config);
-        dataJson.put("students",students);
+        dataJson.put("student",students);
         //json 파일 갱신
         //파일에 데이터 작성하는 방법 : BufferedWriter, PrintWriter, FileWriter
-        BufferedWriter bw = new BufferedWriter(new FileWriter(PATH_json_BWH, false));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(PATH, false));
         bw.write(DBConfig.dataJson.toJSONString());
         bw.close();
+    }
+    public static void modifyStudent(String studentId, JSONObject studentJson) throws IOException {
+        students.put(studentId, studentJson);
+        updateDatabase();
+    }
+    public static void modifySubjects(String studentId, String sortOfSubjects, JSONObject subjects){
+        if(sortOfSubjects.equals("필수과목") || sortOfSubjects.equals("선택과목")){
+
+            students.put(studentId, subjects);
+        }
+    }
+    public static void modifySubject(String studentId, String subjectName, String modifyName,JSONObject subjectJson){
+        JSONObject student = (JSONObject) students.get(studentId);
+
+        if(((JSONObject) student.get("필수과목")).containsKey(subjectName)){
+            JSONObject subjectSort = (JSONObject) student.get("필수과목");
+            JSONObject subject = (JSONObject) subjectSort.get(subjectName);
+
+            subjectSort.remove(subjectName);
+
+            student.put("필수과목",subjectSort);
+            students.put(studentId,student);
+
+        } else if (((JSONObject) student.get("선택과목")).containsKey(subjectName)) {
+            JSONObject subjectSort = (JSONObject) student.get("선택과목");
+            JSONObject subject = (JSONObject) subjectSort.get(subjectName);
+        }
     }
 }
