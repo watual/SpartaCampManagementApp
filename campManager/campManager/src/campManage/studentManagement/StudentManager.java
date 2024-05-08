@@ -3,12 +3,10 @@ package campManage.studentManagement;
 import campManage.model.Score1;
 import campManage.model.Subject;
 import campManage.src.DBConfig;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.*;
-import java.util.Iterator;
 import java.util.Scanner;
 
 
@@ -231,56 +229,43 @@ public class StudentManager {
         DBConfig.updateDatabase();
     }
 
-    //json 키값이 중복되면 뒤에 입력된 값으로 변경됨!
     //수정
     public void reStu() throws Exception{
-//        Object obj = parser.parse(reader);
-//        JSONObject jsonObject = (JSONObject)obj;
-        JSONObject reset;
-//        JSONObject reset2 = new JSONObject();
+        JSONObject resetSubject;
+        JSONObject subject1 = new JSONObject();
+        JSONObject originSubject;
         System.out.println("================수강생 수정===================");
         inquiryAll();
         System.out.println("수정할 수강생 ID 입력");
         String id = sc.nextLine();
-        reset = (JSONObject) student.get(id);//jsonObject:전체데이터, student:학생데이터
+        resetSubject = (JSONObject) student.get(id);//jsonObject:전체데이터, student:학생데이터
         System.out.println("1. 필수과목 수정 2. 선택과목 수정 3. 상태수정");
         switch (sc.nextLine()){
-            case "1" : JSONObject op = new JSONObject();
-                JSONObject tt = new JSONObject();
+            case "1" :
+                JSONObject newSubjectNum = new JSONObject();
                 System.out.println("수정할 과목 입력");
-                String si = sc.nextLine();
-                reset.remove(si);
+                String subId = sc.nextLine();
+                originSubject = (JSONObject) resetSubject.get("필수과목");
+                originSubject.remove(subId);
                 System.out.println("변경할 과목 입력");
-                String gg = sc.nextLine();
+                String newSub = sc.nextLine();
                 for(int j=0; j<10; j++){
-                    op.put(j+1, "0");
+                    newSubjectNum.put(j+1, "0");
 
-                    tt.put(gg,op);
+                    subject1.put(newSub,newSubjectNum);
                 }
-                reset.put("필수과목",tt);
+                resetSubject.put("필수과목",subject1);
 //            case 2 -> ;
-//            case 3 -> ;
+            case "3" :
+                resetSubject.remove("상태");
+                System.out.println("변경할 상태 입력 Red, Yellow, Green");
+                String newFeel = sc.nextLine();
+                resetSubject.put("상태",newFeel);
         }
-        student.put(id,reset);
+        DBConfig.students.put(id,resetSubject);
         System.out.println("수정 완료!");
         DBConfig.updateDatabase();
 
-    }
-    //필수 과목
-    public void setMainSub(JSONObject reset){
-        JSONObject op = new JSONObject();
-        JSONObject tt = new JSONObject();
-        System.out.println("수정할 과목 입력");
-        String si = sc.nextLine();
-        reset.remove(si);
-        System.out.println("변경할 과목 입력");
-        String gg = sc.nextLine();
-        for(int j=0; j<10; j++){
-            op.put(j+1, "0");
-
-            tt.put(gg,op);
-        }
-        reset.put("필수과목",tt);
     }
 
     public void inquiryAll() {
