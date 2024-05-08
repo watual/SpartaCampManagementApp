@@ -50,8 +50,8 @@ public class DBConfig {
         try {
             dataJson = (JSONObject) (new JSONParser().parse(sb.toString()));
             config = (JSONObject) dataJson.get("config");
-            students = (JSONObject) dataJson.get("student");
-        }catch (Exception e){
+            students = (JSONObject) dataJson.get("students");
+        } catch (Exception e){
             System.out.println("데이터가 없습니다");
             //JSON 데이터가 없을때 초기생성
             config = (JSONObject) ((new JSONParser().parse("{\"학생고유번호\":0}")));
@@ -61,38 +61,38 @@ public class DBConfig {
     public static void updateDatabase() throws IOException {
         //dataJson에 config, students 병합
         dataJson.put("config",config);
-        dataJson.put("student",students);
+        dataJson.put("students",students);
         //json 파일 갱신
         //파일에 데이터 작성하는 방법 : BufferedWriter, PrintWriter, FileWriter
         BufferedWriter bw = new BufferedWriter(new FileWriter(PATH, false));
         bw.write(DBConfig.dataJson.toJSONString());
         bw.close();
     }
-    public static void modifyStudent(String studentId, JSONObject studentJson) throws IOException {
-        students.put(studentId, studentJson);
-        updateDatabase();
-    }
-    public static void modifySubjects(String studentId, String sortOfSubjects, JSONObject subjects){
-        if(sortOfSubjects.equals("필수과목") || sortOfSubjects.equals("선택과목")){
-
-            students.put(studentId, subjects);
-        }
-    }
-    public static void modifySubject(String studentId, String subjectName, String modifyName,JSONObject subjectJson){
-        JSONObject student = (JSONObject) students.get(studentId);
-
-        if(((JSONObject) student.get("필수과목")).containsKey(subjectName)){
-            JSONObject subjectSort = (JSONObject) student.get("필수과목");
-            JSONObject subject = (JSONObject) subjectSort.get(subjectName);
-
-            subjectSort.remove(subjectName);
-
-            student.put("필수과목",subjectSort);
-            students.put(studentId,student);
-
-        } else if (((JSONObject) student.get("선택과목")).containsKey(subjectName)) {
-            JSONObject subjectSort = (JSONObject) student.get("선택과목");
-            JSONObject subject = (JSONObject) subjectSort.get(subjectName);
-        }
-    }
+//    public static void modifyStudent(String studentId, JSONObject studentJson) throws IOException {
+//        students.put(studentId, studentJson);
+//        updateDatabase();
+//    }
+//    public static void modifySubjects(String studentId, String sortOfSubjects, JSONObject subjects){
+//        if(sortOfSubjects.equals("필수과목") || sortOfSubjects.equals("선택과목")){
+//
+//            students.put(studentId, subjects);
+//        }
+//    }
+//    public static void modifySubject(String studentId, String subjectName, String modifyName,JSONObject subjectJson){
+//        JSONObject student = (JSONObject) students.get(studentId);
+//
+//        if(((JSONObject) student.get("필수과목")).containsKey(subjectName)){
+//            JSONObject subjectSort = (JSONObject) student.get("필수과목");
+//            JSONObject subject = (JSONObject) subjectSort.get(subjectName);
+//
+//            subjectSort.remove(subjectName);
+//
+//            student.put("필수과목",subjectSort);
+//            students.put(studentId,student);
+//
+//        } else if (((JSONObject) student.get("선택과목")).containsKey(subjectName)) {
+//            JSONObject subjectSort = (JSONObject) student.get("선택과목");
+//            JSONObject subject = (JSONObject) subjectSort.get(subjectName);
+//        }
+//    }
 }

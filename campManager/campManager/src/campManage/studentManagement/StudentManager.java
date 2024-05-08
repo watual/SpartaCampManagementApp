@@ -12,34 +12,15 @@ import java.util.Scanner;
 
 
 public class StudentManager {
-   private String ID;
-   private String name;
-   private String[] stuCon ={"Red","Green","Yellow"};
-   Subject subject=new Subject();
-   Score1 score1=new Score1();
 
    Scanner sc;
-
-   JSONObject jsonObject;
-   JSONObject config;
    JSONObject student;
    JSONObject emptySubject;
-
-   JSONObject studentInfo;
-
    JSONParser parser;
 
     //생성자
     public StudentManager() throws Exception {
         sc = new Scanner(System.in);
-        Reader reader = new FileReader("campManager/campManager/src/campManage/src/testjson.json");
-        parser = new JSONParser();
-        jsonObject = (JSONObject) parser.parse(reader);
-        reader.close();
-
-        config = (JSONObject) jsonObject.get("config");
-        student = (JSONObject) jsonObject.get("student");
-        JSONObject studentInfo = new JSONObject();
         parser = new JSONParser();
         emptySubject = (JSONObject) DBConfig.config.get("empty");
     }
@@ -66,15 +47,13 @@ public class StudentManager {
         System.out.print("id 입력 : ");
         sc.nextLine();
         String id = sc.nextLine();
-        System.out.println(jsonObject.get(id));
+        System.out.println(DBConfig.students.get(id));
 
     }
-    //점수 초기화
 
     //안내문
     public void info(){
         System.out.println("====필수과목====");
-//        System.out.println("Java, 객체지향, Spring, JPA, MySQL");
         JSONObject subMandatory = (JSONObject) DBConfig.config.get("필수과목");
         subMandatory.keySet().stream().sorted().forEach(e -> {
             System.out.println(e+". "+subMandatory.get(e));
@@ -83,25 +62,28 @@ public class StudentManager {
     }
     public void info2(){
         System.out.println("=====선택과목=====");
-        System.out.println("디자인 패턴, Spring Security, Redis, MongoDB");
+        JSONObject subMandatory2 = (JSONObject) DBConfig.config.get("선택과목");
+        subMandatory2.keySet().stream().sorted().forEach(e -> {
+            System.out.println(e+". "+subMandatory2.get(e));
+
+        });
         System.out.println("최소 2개 입력 (0 입력시 입력종료)");
     }
     //생성
     public void makeStu() throws Exception {
-
-//        Object obj = parser.parse(reader);
-//        JSONObject jsonObject = (JSONObject)obj;
+        JSONObject margeStudent = new JSONObject();
         JSONObject addStudent = new JSONObject();
-        JSONObject jsonArray = new JSONObject();
-        JSONObject jsonArray2 = new JSONObject();
-        JSONObject addSub = new JSONObject();
+        JSONObject addMainSubject = new JSONObject();
+        JSONObject addSubSubject = new JSONObject();
+        JSONObject addScore= new JSONObject();
+        JSONObject studentFeel =(JSONObject) DBConfig.config.get("상태");
+        JSONObject subMandatory = (JSONObject) DBConfig.config.get("필수과목");
+        JSONObject subMandatory2 = (JSONObject) DBConfig.config.get("선택과목");
         boolean flag = true;
         System.out.println("========수강생 생성=========");
         while (flag) {
-            //막는거 만들기
             JSONObject stuObj = new JSONObject();
-//            System.out.print("ID 입력 : ");
-            String id =  config.get("id").toString();
+            String id =  DBConfig.config.get("id").toString();
             System.out.print("이름 입력 : ");
             String name = sc.nextLine();
             info();
@@ -109,104 +91,97 @@ public class StudentManager {
             while (true){
                 //must : 필수과목 이름
                 String must = sc.nextLine();
-                if(must.equals("0") || jsonArray.size()>=5)break;
+                if(must.equals("0") || addMainSubject.size()>=5)break;
+                switch (must) {
+                    case "1" -> must = (String) subMandatory.get("1");
+                    case "2" -> must = (String) subMandatory.get("2");
+                    case "3" -> must = (String) subMandatory.get("3");
+                    case "4" -> must = (String) subMandatory.get("4");
+                    case "5" -> must = (String) subMandatory.get("5");
+                    default -> throw new Exception();
+                }
+                addScore.put("1","");
+                addMainSubject.put(must,addScore);
 
                 //필수과목 key값 입력 -> value(java)에 emptySubject달아서 임시 json 생성
-                System.out.println(emptySubject.getClass());
-//                if(jsonArray.size()<5){
-//                        jsonArray.put(,emptySubject);
-//                    for(int i=0; i<((JSONObject)DBConfig.config.get("필수과목")).size(); i++){ //config 최대 선택
-//                        if(must.equals("0")){
-//                            break Loopout;
-//                        }else if(must.equals(subject.subject1[i])){
-//                            for(int j=0; j<10; j++){
-//                                addSub.put(j+1, "0");
-//                                jsonArray.put(must,addSub);
-//                            }
-//                        }
-//                    }
-//                    if(jsonArray.equals(must)){
-//                        System.out.println("잘못된 입력입니다!");
-//                        break;
-//                    }
-//                }else{
-//                    break;
-//                }
+
+
             }
             info2();
             System.out.print("선택 과목 입력 : ");
             Loopout2:
             while (true){
-                String may = sc.next();
+                String may = sc.nextLine();
+                if(may.equals("0") || addSubSubject.size()>=4)break;
+                switch (may) {
+                    case "1" -> may = (String) subMandatory2.get("1");
+                    case "2" -> may = (String) subMandatory2.get("2");
+                    case "3" -> may = (String) subMandatory2.get("3");
+                    case "4" -> may = (String) subMandatory2.get("4");
+                    default -> throw new Exception();
+                }
+                for(int j=0; j<10; j++){
+                    addScore.put(j+1, "0");
 
-                if(jsonArray2.size()<4){
-                    for(int i=0; i<subject.subject2.length; i++){
-                        if(may.equals("0")){
-                            break Loopout2;
-                        }else if(may.equals(subject.subject2[i])){
-                            for(int j=0; j<10; j++){
-                                addSub.put(j+1, "0");
+                    addSubSubject.put(may,addScore);
+                }
 
-                                jsonArray2.put(may,addSub);
-                            }
-                        }
-                    }
-                    if(jsonArray2.equals(may)){
-                        System.out.println("잘못된 입력입니다!");
-                        break;
-                    }
-                }else{
-                    break Loopout2;
+            }
+            String addStuFeel;
+            System.out.print("현재 상태 1. Red 2. Yellow 3. Green");
+            switch (sc.nextLine()){
+                case "1" -> addStuFeel = (String)studentFeel.get("1");
+                case "2" -> addStuFeel = (String)studentFeel.get("2");
+                case "3" -> addStuFeel = (String)studentFeel.get("3");
+                default -> throw new Exception();
+            }
+
+            stuObj.put("상태", addStuFeel);
+            stuObj.put("선택 과목", addSubSubject);
+            stuObj.put("필수 과목", addMainSubject);
+            stuObj.put("이름", name);
+            stuObj.put("고유번호",id);
+            addStudent.put(id,stuObj);
+            //config의 고유번호 상승
+            int newConfigID;
+            newConfigID = Integer.parseInt(id) + 1;
+            while (true) {
+                if(newConfigID != Integer.parseInt((String)DBConfig.config.get("id"))){
+                    break;
+                }else {
+                    newConfigID += 1;
+                }
+
+            }
+            DBConfig.config.put("id",Integer.toString(newConfigID));
+
+            margeStudent.put("students",addStudent);   //student{1, 2, 3, 4}, config
+
+            JSONObject studentMerge = new JSONObject();
+            JSONObject[] objs= new JSONObject[]{student,addStudent};
+            for (JSONObject object : objs){
+                Iterator it = object.keySet().iterator();
+                while (it.hasNext()) {
+                    String key = (String) it.next();
+                    studentMerge.put(key, object.get(key));
                 }
             }
-            String select = sc.nextLine();
-            System.out.print("현재 상태(Green,Yellow,Red) : ");
-            String con = sc.nextLine();
-            if(con.equals(stuCon[0])){} // yellow, red, green 아닐때
-            stuObj.put("상태", con);
-            stuObj.put("선택 과목", jsonArray2);
-            stuObj.put("필수 과목", jsonArray);
-            stuObj.put("이름", name);
-            addStudent.put(id,stuObj);
-
-            jsonObject.put("student",addStudent);   //student{1, 2, 3, 4}, config
-            System.out.println(addStudent);
-            File jsonFile = new File("campManager/campManager/src/campManage/src/testjson.json");
-            FileWriter fileWriter = new FileWriter(jsonFile , false);
-
-
+            DBConfig.dataJson.put("students",studentMerge);
+            System.out.println("생성완료");
+//            System.out.println("##################################");
+//            System.out.println(DBConfig.dataJson);
             System.out.println("더 추가 하시겠습니까? 1. 예 2. 아니요");
-            switch (sc.nextInt()) {
-                case 1 :
-                    fileWriter.write(jsonObject.toJSONString());
-                    flag = true;
-                    break;
-                case 2 :
-                    fileWriter.write(jsonObject.toJSONString());
-                    fileWriter.close();
-                    flag = false;
-                    break;
+            if(sc.nextLine().equals("2")){
+                break;
             }
         }
+        DBConfig.updateDatabase();  //test.json 파일을 변경 -> Reader로 가져오기 전에 최신화
     }
 
     //삭제
     public void delStu() throws Exception{
-//        Object obj = parser.parse(reader);
-//        JSONObject jsonObject = (JSONObject)obj;
+
         System.out.println("================수강생 삭제===================");
-//        JSONObject jsonRes = (JSONObject) jsonObject.get("student");
-//        JSONObject jsonview = new JSONObject();
-//        JSONObject[] objs= new JSONObject[]{jsonRes};
-//        for (JSONObject object : objs){
-//            Iterator it = object.keySet().iterator();
-//            while (it.hasNext()) {
-//                String key = (String) it.next();
-//                jsonview.put(key, object.get(key));
-//                System.out.println(key + ":" + jsonview.get("이름")+ "\t/");
-//
-//            }
-//        }
 
         inquiryAll();
         System.out.print("삭제할 수강생 ID 입력 : ");
@@ -218,6 +193,7 @@ public class StudentManager {
             System.out.println(e.getMessage());
         }
         System.out.println("삭제 완료");
+        DBConfig.config.put("id",id);
         DBConfig.updateDatabase();
     }
 
@@ -227,26 +203,47 @@ public class StudentManager {
         JSONObject subject1 = new JSONObject();
         JSONObject originSubject;
         JSONObject studentFeel =(JSONObject) DBConfig.config.get("상태");
+        JSONObject studentMainSub =(JSONObject) DBConfig.config.get("필수과목");
+        JSONObject studentSubSub =(JSONObject) DBConfig.config.get("선택과목");
         System.out.println("================수강생 수정===================");
         inquiryAll();
         System.out.println("수정할 수강생 ID 입력");
         String id = sc.nextLine();
-        resetSubject = (JSONObject) student.get(id);//jsonObject:전체데이터, student:학생데이터
+        resetSubject = (JSONObject) DBConfig.students.get(id);
         System.out.println("1. 필수과목 수정 2. 선택과목 수정 3. 상태수정");
         switch (sc.nextLine()){
             case "1" :
+                String mainRemove;
+                String mainNew;
                 JSONObject newSubjectNum = new JSONObject();
-                System.out.println("변경할 보유과목 선택");
-                String subMainId = sc.nextLine();
-                originSubject = (JSONObject) resetSubject.get("필수과목");
-                originSubject.remove(subMainId);
-                System.out.println("변경할 목표과목 선택");
-                String newSub = sc.nextLine();
-                for(int j=0; j<10; j++){
-                    newSubjectNum.put(j+1, "0");
-
-                    subject1.put(newSub,newSubjectNum);
+                System.out.println("변경할 보유과목 선택 1. Java 2. 객체지향 3. Spring, 4. JPA 5. MySQL");
+                switch(sc.nextLine()){
+                    case "1" -> mainRemove = (String) studentMainSub.get("1");
+                    case "2" -> mainRemove = (String) studentMainSub.get("2");
+                    case "3" -> mainRemove = (String) studentMainSub.get("3");
+                    case "4" -> mainRemove = (String) studentMainSub.get("4");
+                    case "5" -> mainRemove = (String) studentMainSub.get("5");
+                    default -> throw new Exception();
                 }
+                originSubject = (JSONObject) resetSubject.get("필수과목");
+                originSubject.remove(mainRemove);
+                System.out.println("변경할 목표과목 선택 1. Java 2. 객체지향 3. Spring, 4. JPA 5. MySQL");
+                switch(sc.nextLine()){
+                    case "1" -> mainNew = (String) studentMainSub.get("1");
+                    case "2" -> mainNew = (String) studentMainSub.get("2");
+                    case "3" -> mainNew = (String) studentMainSub.get("3");
+                    case "4" -> mainNew = (String) studentMainSub.get("4");
+                    case "5" -> mainNew = (String) studentMainSub.get("5");
+                    default -> throw new Exception();
+                }
+                if(mainNew == mainRemove){
+                    throw new Exception();
+                }else if(mainNew.equals(originSubject.toString())){
+                    throw new Exception();
+                }
+                newSubjectNum.put("1", "");
+                subject1.put(mainNew,newSubjectNum);
+
                 JSONObject subjectMerge = new JSONObject();
                 JSONObject[] objs= new JSONObject[]{subject1,originSubject};
                 for (JSONObject object : objs){
@@ -260,18 +257,34 @@ public class StudentManager {
 
                 break;
             case "2" :
+                String subRemove;
+                String subNew;
                 JSONObject newSubjectNum2 = new JSONObject();
-                System.out.println("변경할 보유과목 선택 1.디자인 패턴");
-                String subSubId = sc.nextLine();
-                originSubject = (JSONObject) resetSubject.get("선택과목");
-                originSubject.remove(subSubId);
-                System.out.println("변경할 목표과목 선택");
-                String newSu = sc.nextLine();
-                for(int j=0; j<10; j++){
-                    newSubjectNum2.put(j+1, "0");
-
-                    subject1.put(newSu,newSubjectNum2);
+                System.out.println("변경할 보유과목 선택 1.디자인 패턴 2. Spring Security 3. Redis, 4. MongoDB");
+                switch(sc.nextLine()){
+                    case "1" -> subRemove = (String) studentSubSub.get("1");
+                    case "2" -> subRemove = (String) studentSubSub.get("2");
+                    case "3" -> subRemove = (String) studentSubSub.get("3");
+                    case "4" -> subRemove = (String) studentSubSub.get("4");
+                    default -> throw new Exception();
                 }
+                originSubject = (JSONObject) resetSubject.get("선택과목");
+                originSubject.remove(subRemove);
+                System.out.println("변경할 목표과목 선택 1.디자인 패턴 2. Spring Security 3. Redis, 4. MongoDB");
+                switch(sc.nextLine()){
+                    case "1" -> subNew = (String) studentSubSub.get("1");
+                    case "2" -> subNew = (String) studentSubSub.get("2");
+                    case "3" -> subNew = (String) studentSubSub.get("3");
+                    case "4" -> subNew = (String) studentSubSub.get("4");
+                    default -> throw new Exception();
+                }
+                if(subNew == subRemove){
+                    throw new Exception();
+                }else if(subNew.equals(originSubject.toString())){
+                    throw new Exception();
+                }
+                newSubjectNum2.put("1", "");
+                subject1.put(subNew,newSubjectNum2);
                 JSONObject subjectMerge2 = new JSONObject();
                 JSONObject[] objs2= new JSONObject[]{subject1,originSubject};
                 for (JSONObject object : objs2){
@@ -285,20 +298,22 @@ public class StudentManager {
 
                 break;
             case "3" :
-                JSONObject newFeel;
+                String newFeel;
                 resetSubject.remove("상태");
                 System.out.println("변경할 상태 입력 1. Red, 2. Yellow, 3. Green");
 //                String newFeel = sc.nextLine();
                 switch (sc.nextLine()){
-                    case "1" ->newFeel = (JSONObject) studentFeel.get("1");
-                    case "2" ->newFeel = (JSONObject) studentFeel.get("2");
-                    case "3" ->newFeel = (JSONObject) studentFeel.get("3");
+                    case "1" ->newFeel = (String) studentFeel.get("1");
+                    case "2" ->newFeel = (String) studentFeel.get("2");
+                    case "3" ->newFeel = (String) studentFeel.get("3");
                     default -> newFeel = null;
                 }
-                resetSubject.put("상태",newFeel.toString());
+                resetSubject.put("상태",newFeel);
                 break;
         }
+        System.out.println(resetSubject);
         DBConfig.students.put(id,resetSubject);
+        System.out.println(DBConfig.students);
         System.out.println("수정 완료!");
         DBConfig.updateDatabase();
 
