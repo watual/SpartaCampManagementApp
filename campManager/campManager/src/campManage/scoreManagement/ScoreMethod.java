@@ -2,30 +2,20 @@ package campManage.scoreManagement;
 
 import campManage.src.DBConfig;
 
-import java.io.FileReader;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.*;
-import org.w3c.dom.ls.LSOutput;
-
 
 import java.io.*;
 import java.util.*;
 
-public class ScoreMethod_CYJ {
-
-    static Scanner scanner;
-
-    public ScoreMethod_CYJ() {
-        scanner = new Scanner(System.in);
-    }
+public class ScoreMethod {
+    static Scanner scanner = new Scanner(System.in);
 
     //생성하기
-    public static void crateScore() throws IOException, ParseException {
+    public static void crateScore() throws Exception {
+        createScore:
         while (true) {
-            System.out.println("========== test ==========");
-            System.out.println("새로운 학생 정보를 입력하세요 [ 종료하려면 'exit' 입력 ]");
+//            System.out.println("새로운 학생 정보를 입력하세요 [ 종료하려면 'exit' 입력 ]");
 
             // 고유 번호 입력 받기
             System.out.print("고유 번호를 입력하세요: ");
@@ -33,7 +23,12 @@ public class ScoreMethod_CYJ {
             if (studentId.equalsIgnoreCase("exit") || studentId.equalsIgnoreCase("e")) {
                 break; // 종료 조건
             }
-
+            String str = (String) ((JSONObject)DBConfig.students.get(studentId)).get("점수초기등록자");
+            if(!str.equals("1")){
+                updateRoundScoreBySubject(studentId);
+                break createScore;
+            }
+            System.out.println("점수 초기 등록자입니다. 점수를 등록합니다.");
             //학생이 등록한 과목 목록을 출력해주고 번호를 입력받음
             JSONObject studentInfo = (JSONObject) DBConfig.students.get(studentId);
 
@@ -75,10 +70,12 @@ public class ScoreMethod_CYJ {
 //            electiveSubjects.put("MongoDB", createSubjectJSONObject());
 
             studentInfo.put("선택과목", electiveSubjects);
+            studentInfo.put("점수초기등록자", "0");
 
             //등록
             DBConfig.students.put(studentId, studentInfo);
             DBConfig.updateDatabase();
+            break createScore;
 
 //            // 이름 입력 받기
 //            System.out.print("이름을 입력하세요: ");
@@ -93,48 +90,51 @@ public class ScoreMethod_CYJ {
             // 학생 정보를 전체 데이터베이스에 추가
 //            database.put(studentId, studentInfo);
         }
-
         // 생성된 JSON 데이터를 파일로 저장
 //        saveJSONToFile(database);
     }
 
     private static JSONObject createSubjectJSONObject() {
-        JSONObject subjectJSONObject = new JSONObject();
-        int i = 1;
-        while (i <= 10) {
-
-            System.out.println(" [ 종료하려면 'exit' 입력 ]");
-            System.out.print("회차 " + i + " 점수를 입력하세요: ");
-            String input = scanner.nextLine().trim(); // 입력 값을 문자열로 받음
-
-            if (input.equalsIgnoreCase("exit") || input.equalsIgnoreCase("e")) {
-                if (i == 1) {
-                    System.out.println("그댄 자격이 없다.. 1회차는 무조건 입력하십쇼");
-                    continue;
-                } else {
-                    break; // exit 입력 시 반복문 종료
-                }
-            }
-            if (0 > Integer.parseInt(input) || Integer.parseInt(input) > 100) {
-                System.out.println("그댄 자격이 없다.. 0 ~ 100의 값 입력하십쇼");
-                continue;
-            }
-
-
+        while(true) {
             try {
-                int score = Integer.parseInt(input); // 입력된 문자열을 정수로 변환
-                subjectJSONObject.put(String.valueOf(i), Integer.toString(score)); // JSONObject에 추가
-            } catch (NumberFormatException e) {
-                System.out.println("잘못된 입력입니다. 숫자를 입력하세요.");
-                i--; // 잘못된 입력을 처리하기 위해 반복 횟수를 다시 조정
+                JSONObject subjectJSONObject = new JSONObject();
+                int i = 1;
+                while (i <= 10) {
+                    System.out.println(" [ 종료하려면 'exit' 입력 ]");
+                    System.out.print("회차 " + i + " 점수를 입력하세요: ");
+                    String input = scanner.nextLine().trim(); // 입력 값을 문자열로 받음
+
+                    if (input.equalsIgnoreCase("exit") || input.equalsIgnoreCase("e")) {
+                        if (i == 1) {
+                            System.out.println("그댄 자격이 없다.. 1회차는 무조건 입력하십쇼");
+                            continue;
+                        } else {
+                            break; // exit 입력 시 반복문 종료
+                        }
+                    }
+                    if (0 > Integer.parseInt(input) || Integer.parseInt(input) > 100) {
+                        System.out.println("그댄 자격이 없다.. 0 ~ 100의 값 입력하십쇼");
+                        continue;
+                    }
+
+                    try {
+                        int score = Integer.parseInt(input); // 입력된 문자열을 정수로 변환
+                        subjectJSONObject.put(String.valueOf(i), Integer.toString(score)); // JSONObject에 추가
+                    } catch (NumberFormatException e) {
+                        System.out.println("잘못된 입력입니다. 숫자를 입력하세요.");
+                        i--; // 잘못된 입력을 처리하기 위해 반복 횟수를 다시 조정
+                    }
+                    i++;
+                }
+                return subjectJSONObject;
+            } catch (Exception e) {
+                System.out.println(e.getMessage() + "입력오류, 다시 입력해주세요.");
             }
-            i++;
         }
-        return subjectJSONObject;
     }
 
 //    private static void saveJSONToFile(JSONObject json) {
-//        try (FileWriter fileWriter = new FileWriter("C:\\Users\\최유진\\Desktop\\SpartaCampManagementApp\\campManager\\campManager\\src\\campManage\\src\\test2.json")) {
+//        try (FileWriter fileWriter = new FileWriter("C:\\Users\\최유진\\Desktop\\SpartaCampManagementApp\\campManager\\campManager\\src\\campManage\\src\\.json")) {
 //            fileWriter.write(json.toString());
 //            System.out.println("JSON DB 파일이 성공적으로 생성되었습니다");
 //        } catch (IOException e) {
@@ -142,17 +142,15 @@ public class ScoreMethod_CYJ {
 //        }
 //    }
 
-
-    public static void updateRoundScoreBySubject() throws IOException, ParseException {
+    public static void updateRoundScoreBySubject(String studentId) throws IOException, ParseException {
 //        JSONParser parser = new JSONParser();
-//        String fileName = "C:\\Users\\최유진\\Desktop\\SpartaCampManagementApp\\campManager\\campManager\\src\\campManage\\src\\test2.json";
 
 //        try (Reader reader = new FileReader(fileName)) {
 //            Scanner scanner = new Scanner(System.in);
 //            JSONObject jsonObject = (JSONObject) parser.parse(reader);
 
-        System.out.print("학생 고유번호(studentId)를 입력하세요: ");
-        String studentId = scanner.nextLine();
+//        System.out.print("학생 고유번호(studentId)를 입력하세요: ");
+//        String studentId = scanner.nextLine();
 
         if (DBConfig.students.containsKey(studentId)) {
             JSONObject studentObj = (JSONObject) DBConfig.students.get(studentId);
@@ -191,7 +189,6 @@ public class ScoreMethod_CYJ {
                 }
             }
 
-
             if (requiredSubjects.containsKey(subjectName)) {
 //                    subjectsToUpdate = requiredSubjects;
 //                    JSONObject subjectScores = (JSONObject) subjectsToUpdate.get(subjectName);
@@ -227,7 +224,6 @@ public class ScoreMethod_CYJ {
 //                } catch (IOException e) {
 //                    e.printStackTrace();
 //                }
-
         } else {
             System.out.println("해당 학생 고유번호가 존재하지 않습니다.");
         }
@@ -371,7 +367,6 @@ public class ScoreMethod_CYJ {
                 System.out.println("평균점수: " + avgScore);
                 Grade grade = calculateRequiredSubjectGrade(avgScore);
                 System.out.println("선택한 과목의 평균 등급은" + grade + "입니다.");
-
             } else if (optionalSubjects.containsKey(subjectName)) {
                 JSONObject elementSubject = (JSONObject) optionalSubjects.get(subjectName);
                 Iterator<String> roundKeys = elementSubject.keySet().iterator();
@@ -390,10 +385,7 @@ public class ScoreMethod_CYJ {
                 return;
             }
         }
-
     }
-
-
 
     public static void avgGradeForRequiredSubjectByState() {
         // 특정 상태 수강생들의 필수 과목 평균 등급을 조회
@@ -418,28 +410,27 @@ public class ScoreMethod_CYJ {
     }
 
     static ArrayList<String> studentIdArr = new ArrayList<>();;
-    static int javaCnt;
-    static int objectCnt;
-    static int springCnt;
-    static int jpaCnt;
-    static int mySqlCnt;
     static int sumScore;
     static int cnt;
-    static int javaAvgSum;
-    static int objectAvgSum;
-    static int springAvgSum;
-    static int jpaAvgSum;
-    static int mySqlAvgSum;
-    static int javaAvg;
-    static int objectAvg;
-    static int springAvg;
-    static int jpaAvg;
-    static int mySqlAvg;
 
     public static void avgCalculate(String state) {
+        int javaCnt = 0;
+        int objectCnt = 0;
+        int springCnt = 0;
+        int jpaCnt = 0;
+        int mySqlCnt = 0;
+        int javaAvgSum = 0;
+        int objectAvgSum = 0;
+        int springAvgSum = 0;
+        int jpaAvgSum = 0;
+        int mySqlAvgSum = 0;
+        int javaAvg = 0;
+        int objectAvg = 0;
+        int springAvg = 0;
+        int jpaAvg = 0;
+        int mySqlAvg = 0;
         //같은 상태에 있는 학생들의 고유번호 arrayList
         ArrayList<String> studentIdArr = findStudentIdInSameState(state);
-
         JSONObject requiredSubjects;
 
         //studentIdArr 돌면서 각각의 필수과목 평균 계산하기
@@ -448,7 +439,6 @@ public class ScoreMethod_CYJ {
             requiredSubjects = (JSONObject) studentObj.get("필수과목");
 
             Iterator<String> requiredSubjectsId = requiredSubjects.keySet().iterator();
-
 
             while (requiredSubjectsId.hasNext()) {
                 String selectedSubject = requiredSubjectsId.next();
@@ -476,7 +466,6 @@ public class ScoreMethod_CYJ {
                 }
             }
         }
-
         int javaAvgScorePerState = avgCalculatePerSubject(javaCnt, javaAvgSum);
         Grade javaGrade = calculateRequiredSubjectGrade(javaAvgScorePerState);
 
@@ -492,16 +481,12 @@ public class ScoreMethod_CYJ {
         int mySQLAvgScorePerState = avgCalculatePerSubject(mySqlCnt, mySqlAvgSum);
         Grade mySQLGrade = calculateRequiredSubjectGrade(mySQLAvgScorePerState);
 
-
         System.out.println("Java 평균점수: " + javaAvgScorePerState + "점, " + "등급: " + javaGrade);
         System.out.println("객체지향 평균점수: " + objectAvgScorePerState + "점, " + "등급: " + objectGrade);
         System.out.println("Spring 평균점수: " + springAvgScorePerState + "점, " + "등급: " + springGrade);
         System.out.println("JPA 평균점수: " + jpaAvgScorePerState + "점, " + "등급: " + jpaGrade);
         System.out.println("MySQL 평균점수: " + mySQLAvgScorePerState + "점, " + "등급: " + mySQLGrade);
-
-
     }
-
 
     public static ArrayList<String> findStudentIdInSameState(String state) {
         JSONObject studentObj = (JSONObject) DBConfig.students;
@@ -517,13 +502,10 @@ public class ScoreMethod_CYJ {
                 studentIdArr.add(studentId);
             }
         }
-
         if (studentIdArr.isEmpty()) {
             System.out.println("해당 상태에 해당하는 학생이 없습니다.");
         }
-
         return studentIdArr;
-
     }
 
     public static int innerAvgCalculate(String selectedSubject, JSONObject requiredSubjects) {
@@ -539,7 +521,6 @@ public class ScoreMethod_CYJ {
         return avgScore;
     }
 
-
     public static int avgCalculatePerSubject(int perCnt, int perAvgSum) {
         int perAvg;
         if (perCnt == 0) {
@@ -549,8 +530,5 @@ public class ScoreMethod_CYJ {
         }
         return perAvg;
     }
-
-
-
 }
 
