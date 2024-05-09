@@ -9,9 +9,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 public class DBConfig {
-    public static final String PATH = "campManager/campManager/src/campManage/src/testjson.json";
-    public static final String PATH_BWH = "campManager/campManager/src/campManage/src/Database_백원하.txt";
-    public static final String PATH_json_BWH = "campManager/campManager/src/campManage/src/Database_백원하.json";
+    public static final String PATH = "campManager/campManager/src/campManage/src/Database.json";
+    public static final String PATH_BU = "campManager/campManager/src/campManage/src/DatabaseBackup.txt";
 
     public static JSONObject dataJson;  //전체 데이터
     public static JSONObject config;    //설정 데이터
@@ -58,15 +57,34 @@ public class DBConfig {
 //            students = (JSONObject) ((new JSONParser().parse("{}")));
         }
     }
-    public static void updateDatabase() throws IOException {
-        //dataJson에 config, students 병합
-        dataJson.put("config",config);
-        dataJson.put("students",students);
-        //json 파일 갱신
-        //파일에 데이터 작성하는 방법 : BufferedWriter, PrintWriter, FileWriter
-        BufferedWriter bw = new BufferedWriter(new FileWriter(PATH, false));
-        bw.write(DBConfig.dataJson.toJSONString());
-        bw.close();
+    public static void updateDatabase() {
+        try {
+            //dataJson에 config, students 병합
+            dataJson.put("config", config);
+            dataJson.put("students", students);
+            //json 파일 갱신
+            //파일에 데이터 작성하는 방법 : BufferedWriter, PrintWriter, FileWriter
+            BufferedWriter bw = new BufferedWriter(new FileWriter(PATH, false));
+            bw.write(DBConfig.dataJson.toJSONString());
+            bw.close();
+            initDBConfig();
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    public static void updateDataJson() {
+        try {
+            //json 파일 갱신
+            //파일에 데이터 작성하는 방법 : BufferedWriter, PrintWriter, FileWriter
+            BufferedWriter bw = new BufferedWriter(new FileWriter(PATH, false));
+            bw.write(DBConfig.dataJson.toJSONString());
+            bw.close();
+            initDBConfig();
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
     }
 //    public static void modifyStudent(String studentId, JSONObject studentJson) throws IOException {
 //        students.put(studentId, studentJson);
