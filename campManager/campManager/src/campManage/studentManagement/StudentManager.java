@@ -81,7 +81,6 @@ public class StudentManager {
             System.out.print("이름 입력 : ");
             String name = sc.nextLine();
             info();
-            Loopout:
             while (true){
                 //must : 필수과목 이름
                 String must = sc.nextLine();
@@ -103,7 +102,6 @@ public class StudentManager {
             }
             info2();
             System.out.print("선택 과목 입력 : ");
-            Loopout2:
             while (true){
                 String may = sc.nextLine();
                 if(may.equals("0") || addSubSubject.size()>=4)break;
@@ -114,12 +112,8 @@ public class StudentManager {
                     case "4" -> may = (String) subMandatory2.get("4");
                     default -> throw new Exception();
                 }
-                for(int j=0; j<10; j++){
-                    addScore.put(j+1, "0");
-
+                    addScore.put("1", "0");
                     addSubSubject.put(may,addScore);
-                }
-
             }
             String addStuFeel;
             System.out.println("현재 상태 1. Red 2. Yellow 3. Green");
@@ -162,16 +156,14 @@ public class StudentManager {
             }
             DBConfig.dataJson.put("students",studentMerge);
             System.out.println("생성완료");
-//            System.out.println("##################################");
-//            System.out.println(DBConfig.dataJson);
             System.out.println("더 추가 하시겠습니까? 1. 예 2. 아니요");
             if(sc.nextLine().equals("2")){
                 break;
             }
         }
-        DBConfig.updateDatabase();  //test.json 파일을 변경 -> Reader로 가져오기 전에 최신화
+        DBConfig.updateDatabase();
     }
-
+    //DBConfig.updateDatabase(); = test.json 파일을 변경 -> Reader로 가져오기 전에 최신화
     //삭제
     public void delStu() throws Exception{
 
@@ -211,13 +203,16 @@ public class StudentManager {
                 String mainNew;
                 JSONObject newSubjectNum = new JSONObject();
                 System.out.println("변경할 보유과목 선택 1. Java 2. 객체지향 3. Spring, 4. JPA 5. MySQL");
-                switch(sc.nextLine()){
-                    case "1" -> mainRemove = (String) studentMainSub.get("1");
-                    case "2" -> mainRemove = (String) studentMainSub.get("2");
-                    case "3" -> mainRemove = (String) studentMainSub.get("3");
-                    case "4" -> mainRemove = (String) studentMainSub.get("4");
-                    case "5" -> mainRemove = (String) studentMainSub.get("5");
-                    default -> throw new Exception();
+                loop1:
+                while(true) {
+                    switch (sc.nextLine()) {
+                        case "1" -> {mainRemove = (String) studentMainSub.get("1"); break loop1;}
+                        case "2" -> {mainRemove = (String) studentMainSub.get("2"); break loop1;}
+                        case "3" -> {mainRemove = (String) studentMainSub.get("3"); break loop1;}
+                        case "4" -> {mainRemove = (String) studentMainSub.get("4"); break loop1;}
+                        case "5" -> {mainRemove = (String) studentMainSub.get("5"); break loop1;}
+                        default -> System.out.println("잘못된 입력입니다");
+                    }
                 }
                 originSubject = (JSONObject) resetSubject.get("필수과목");
                 originSubject.remove(mainRemove);
